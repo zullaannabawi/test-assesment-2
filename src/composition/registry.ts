@@ -1,10 +1,21 @@
+import type { MemberRepository } from '@/features/member-dashboard/use-cases/member-repository'
+import { ApiMemberRepository } from '@/features/member-dashboard/infrastructure/api/api-member-repository'
+
+let memberRepositoryInstance: MemberRepository | null = null
+
 /**
- * Dependency-injection registry for the MemberRepository.
- *
- * Wired in `feat/members-api-repository` (build step 4):
- *   - createMemberRepository(): singleton, defaults to ApiMemberRepository
- *   - setMemberRepository(repo | null): test seam to inject an in-memory/mock
- *
- * Kept as a stub until the MemberRepository interface exists (step 2).
+ * Singleton member repository. Defaults to the HTTP implementation so dev runs
+ * go through the mock API end to end; tests inject the in-memory repository
+ * (or any double) via `setMemberRepository`.
  */
-export {}
+export function createMemberRepository(): MemberRepository {
+  if (!memberRepositoryInstance) {
+    memberRepositoryInstance = new ApiMemberRepository()
+  }
+  return memberRepositoryInstance
+}
+
+/** Test/DI seam — `null` resets to the default ApiMemberRepository. */
+export function setMemberRepository(repo: MemberRepository | null): void {
+  memberRepositoryInstance = repo
+}
