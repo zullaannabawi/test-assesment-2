@@ -1,8 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
+import { memberDashboardReducer } from './slices/member-dashboard.slice'
 
 export const makeStore = () =>
   configureStore({
-    reducer: {},
+    reducer: {
+      memberDashboard: memberDashboardReducer,
+    },
   })
 
 export type AppStore = ReturnType<typeof makeStore>
