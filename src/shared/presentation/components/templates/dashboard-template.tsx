@@ -12,6 +12,12 @@ import {
   toggleSelectedMember,
   toggleSelectAllMembers,
 } from '@/shared/presentation/store/slices/member-dashboard.slice'
+import {
+  cancelDeletion,
+  dismissDeletionResult,
+  requestDeletion,
+} from '@/shared/presentation/store/slices/member-deletion.slice'
+import { confirmDeleteMembers } from '@/shared/presentation/store/actions/member-deletion.action'
 import { useDebouncedValue } from '@/shared/presentation/hooks/use-debounced-value'
 import { downloadCsv, toCsv, type MemberCsvRow } from '@/shared/lib/csv'
 import { Button } from '../atoms/button'
@@ -21,11 +27,16 @@ import { StatCardsRow } from '../organisms/stat-cards-row'
 import { MembersTable } from '../organisms/members-table'
 import { EmptyState } from '../organisms/empty-state'
 import { BulkActionBar } from '../organisms/bulk-action-bar'
+import { ConfirmDialog } from '../organisms/confirm-dialog'
+import { SuccessModal } from '../organisms/success-modal'
 
 export function DashboardTemplate() {
   const dispatch = useAppDispatch()
   const { members, listStatus, stats, selectedIds } = useAppSelector(
     (state) => state.memberDashboard,
+  )
+  const { confirmingIds, deleting, lastResult } = useAppSelector(
+    (state) => state.memberDeletion,
   )
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebouncedValue(search, 300)
@@ -93,7 +104,10 @@ export function DashboardTemplate() {
         <EmptyState actionLabel="Clear search" onAction={handleClearSearch} />
       ) : (
         <>
-          <BulkActionBar count={selectedIds.length} />
+          <BulkActionBar
+            count={selectedIds.length}
+            onDelete={() => dispatch(requestDeletion(selectedIds))}
+          />
           <MembersTable
             members={members}
             selectedIds={selectedIds}
@@ -101,9 +115,34 @@ export function DashboardTemplate() {
             onToggleSelectAll={() =>
               dispatch(toggleSelectAllMembers(members.map((member) => member.id)))
             }
+            onDeleteMember={(member) => dispatch(requestDeletion([member.id]))}
           />
         </>
       )}
+
+      <ConfirmDialog
+        open={confirmingIds !== null}
+        title={
+          confirmingIds && confirmingIds.length === 1
+            ? 'Delete Member'
+            : `Delete ${confirmingIds?.length ?? 0} Members`
+        }
+        description="This permanently removes the selected members and revokes their permissions, sessions, and tokens."
+        onConfirm={() => confirmingIds && dispatch(confirmDeleteMembers(confirmingIds))}
+        onCancel={() => dispatch(cancelDeletion())}
+      />
+
+      <SuccessModal
+        open={lastResult !== null}
+        title="Member Deleted Successfully"
+        description={
+          lastResult
+            ? `${lastResult.deleted.length} ${lastResult.deleted.length === 1 ? 'member' : 'members'} deleted successfully. Their permissions, sessions, and tokens have been revoked.`
+            : undefined
+        }
+        primaryLabel="Done"
+        onPrimary={() => dispatch(dismissDeletionResult())}
+      />
     </main>
   )
 }

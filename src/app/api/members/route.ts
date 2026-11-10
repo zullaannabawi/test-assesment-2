@@ -47,3 +47,26 @@ export async function POST(request: Request): Promise<Response> {
     throw error
   }
 }
+
+/** DELETE /api/members — single & multiple (body ids[]); hard delete. */
+export async function DELETE(request: Request): Promise<Response> {
+  let body: unknown
+  try {
+    body = await request.json()
+  } catch {
+    body = null
+  }
+
+  const ids = (body as { ids?: unknown } | null)?.ids
+  const isValidIds =
+    Array.isArray(ids) && ids.length > 0 && ids.every((id) => typeof id === 'number' && Number.isInteger(id))
+
+  if (!isValidIds) {
+    return apiError(422, 'VALIDATION_ERROR', 'Request tidak valid', {
+      ids: 'ids must be a non-empty array of member ids',
+    })
+  }
+
+  const result = await getMemberStore().deleteMembers(ids)
+  return NextResponse.json(result)
+}

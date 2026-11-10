@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { GET as getMembersHandler, POST as postMemberHandler } from '../route'
+import { GET as getMembersHandler, POST as postMemberHandler, DELETE as deleteMembersHandler } from '../route'
 import { GET as getMemberByIdHandler, PUT as putMemberHandler } from '../[id]/route'
 import { GET as getMemberStatsHandler } from '../stats/route'
 import { computeStats } from '../_shared/compute-stats'
@@ -159,7 +159,7 @@ const michaelPayload = {
   bio: 'Mainly working on low fidelity and high fidelity design generation',
 }
 
-function jsonRequest(url: string, method: 'POST' | 'PUT', body: unknown): Request {
+function jsonRequest(url: string, method: 'POST' | 'PUT' | 'DELETE', body: unknown): Request {
   return new Request(url, {
     method,
     headers: { 'content-type': 'application/json' },
@@ -262,5 +262,29 @@ describe('mock API — PUT /api/members/[id]', () => {
       detailContext(2048),
     )
     expect(own.status).toBe(200)
+  })
+})
+
+describe('mock API — DELETE /api/members', () => {
+  it('API-11: partitions existing/missing ids (hard delete) and validates the body', async () => {
+    const mixed = await deleteMembersHandler(jsonRequest(BASE, 'DELETE', { ids: [2039, 9999] }))
+    expect(mixed.status).toBe(200)
+    expect(await mixed.json()).toEqual({ deleted: [2039], failed: [9999] })
+
+    // 2039 is gone for good — hard delete
+    const gone = await getMemberByIdHandler(new Request(`${BASE}/2039`), detailContext(2039))
+    expect(gone.status).toBe(404)
+
+    const empty = await deleteMembersHandler(jsonRequest(BASE, 'DELETE', { ids: [] }))
+    expect(empty.status).toBe(422)
+    expect((await empty.json()).error.code).toBe('VALIDATION_ERROR')
+
+    const notArray = await deleteMembersHandler(jsonRequest(BASE, 'DELETE', { ids: 'nope' }))
+    expect(notArray.status).toBe(422)
+
+    const noBody = await deleteMembersHandler(
+      new Request(BASE, { method: 'DELETE', body: 'not-json' }),
+    )
+    expect(noBody.status).toBe(422)
   })
 })
