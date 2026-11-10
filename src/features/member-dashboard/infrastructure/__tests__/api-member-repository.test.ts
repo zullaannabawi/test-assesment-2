@@ -172,3 +172,75 @@ describe('ApiMemberRepository', () => {
     expect(stats.total_members).toBe(10)
   })
 })
+
+describe('ApiMemberRepository — write methods', () => {
+  it('MF-09: createMember POSTs the exact snake_case contract body and maps the 201 result', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(jsonResponse(sarahDto, 201))
+    vi.stubGlobal('fetch', fetchMock)
+
+    const repo = new ApiMemberRepository(BASE)
+    const member = await repo.createMember(memberInput)
+
+    expect(fetchMock).toHaveBeenCalledWith(`${BASE}/members`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(memberInput),
+    })
+    expect(member).toMatchObject({
+      id: 2048,
+      full_name: 'Sarah Jenkins',
+      bio: null,
+      activity: { repositories: 42, deployments: 1489 },
+    })
+  })
+
+  it('MF-10: updateMember PUTs to the member URL with the body and maps the result', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(jsonResponse(sarahDto))
+    vi.stubGlobal('fetch', fetchMock)
+
+    const repo = new ApiMemberRepository(BASE)
+    const member = await repo.updateMember(2048, memberInput)
+
+    expect(fetchMock).toHaveBeenCalledWith(`${BASE}/members/2048`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(memberInput),
+    })
+    expect(member.id).toBe(2048)
+  })
+
+  it('MF-11: write-path errors map 409 and 422 to the typed domain errors', async () => {
+    const repo = new ApiMemberRepository(BASE)
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(
+        jsonResponse({ error: { code: 'CONFLICT', message: 'Email already registered' } }, 409),
+      ),
+    )
+    await expect(repo.updateMember(2048, memberInput)).rejects.toBeInstanceOf(
+      MemberEmailConflictError,
+    )
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(
+        jsonResponse(
+          {
+            error: {
+              code: 'VALIDATION_ERROR',
+              message: 'Request tidak valid',
+              fields: { department: 'Department value is not valid' },
+            },
+          },
+          422,
+        ),
+      ),
+    )
+    const error: unknown = await repo.createMember(memberInput).catch((e) => e)
+    expect(error).toBeInstanceOf(MemberValidationFieldsError)
+    expect((error as MemberValidationFieldsError).fields).toEqual({
+      department: 'Department value is not valid',
+    })
+  })
+})
