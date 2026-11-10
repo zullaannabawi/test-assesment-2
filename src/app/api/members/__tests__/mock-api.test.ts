@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { GET as getMembersHandler } from '../route'
-import { GET as getMemberByIdHandler } from '../[id]/route'
+import { GET as getMembersHandler, POST as postMemberHandler } from '../route'
+import { GET as getMemberByIdHandler, PUT as putMemberHandler } from '../[id]/route'
 import { GET as getMemberStatsHandler } from '../stats/route'
 import { computeStats } from '../_shared/compute-stats'
-import { ACCOUNT_STATUSES } from '@/features/member-dashboard/domain/member'
+import { ACCOUNT_STATUSES, EMPLOYMENT_TYPES } from '@/features/member-dashboard/domain/member'
 import { resetMemberStore, SEED_MEMBERS } from '../mocks'
 
 const BASE = 'http://localhost:3000/api/members'
@@ -146,5 +146,121 @@ describe('mock API — GET /api/members/stats', () => {
       pending_invites: 5,
       expiring_soon: 3,
     })
+  })
+})
+
+const michaelPayload = {
+  full_name: 'Michael Phelps',
+  email: 'michael.phelps@acme.org',
+  account_status: ACCOUNT_STATUSES[0],
+  job_title: 'Staff UI/UX Designer',
+  department: 'Design',
+  employment_type: EMPLOYMENT_TYPES[1],
+  bio: 'Mainly working on low fidelity and high fidelity design generation',
+}
+
+function jsonRequest(url: string, method: 'POST' | 'PUT', body: unknown): Request {
+  return new Request(url, {
+    method,
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+}
+
+function isoToday(): string {
+  const now = new Date()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  return `${now.getFullYear()}-${month}-${day}`
+}
+
+describe('mock API — POST /api/members', () => {
+  it('API-06: a valid payload creates member 2049 with today and zeroed activity', async () => {
+    const res = await postMemberHandler(jsonRequest(BASE, 'POST', michaelPayload))
+
+    expect(res.status).toBe(201)
+    const member = await res.json()
+    expect(member).toMatchObject({
+      id: 2049,
+      ...michaelPayload,
+      joined_at: isoToday(),
+      activity: { repositories: 0, deployments: 0 },
+    })
+  })
+
+  it('API-07: missing required fields and bad email return 422 with fields', async () => {
+    const missing = await postMemberHandler(jsonRequest(BASE, 'POST', {}))
+    expect(missing.status).toBe(422)
+    const missingBody = await missing.json()
+    expect(missingBody.error.code).toBe('VALIDATION_ERROR')
+    expect(Object.keys(missingBody.error.fields)).toEqual(
+      expect.arrayContaining(['full_name', 'email', 'job_title', 'department']),
+    )
+
+    const badEmail = await postMemberHandler(
+      jsonRequest(BASE, 'POST', { ...michaelPayload, email: 'not-an-email' }),
+    )
+    expect(badEmail.status).toBe(422)
+    expect((await badEmail.json()).error.fields.email).toMatch(/format/i)
+  })
+
+  it('API-08: a duplicate email (case-insensitive) returns 409 CONFLICT', async () => {
+    const res = await postMemberHandler(
+      jsonRequest(BASE, 'POST', {
+        ...michaelPayload,
+        email: 'SARAH.JENKINS@membercore.internal',
+      }),
+    )
+
+    expect(res.status).toBe(409)
+    expect((await res.json()).error.code).toBe('CONFLICT')
+  })
+})
+
+describe('mock API — PUT /api/members/[id]', () => {
+  const edited = {
+    ...michaelPayload,
+    full_name: 'Sarah Jenkins-Edited',
+    email: 'sarah.jenkins@membercore.internal',
+    department: 'Design',
+  }
+
+  it('API-09: update succeeds preserving id/joined_at/activity, and 404s on a missing id', async () => {
+    const res = await putMemberHandler(
+      jsonRequest(`${BASE}/2048`, 'PUT', edited),
+      detailContext(2048),
+    )
+
+    expect(res.status).toBe(200)
+    const member = await res.json()
+    expect(member).toMatchObject({
+      id: 2048,
+      full_name: 'Sarah Jenkins-Edited',
+      department: 'Design',
+      joined_at: '2022-02-14',
+      activity: { repositories: 42, deployments: 1489 },
+    })
+
+    const missing = await putMemberHandler(
+      jsonRequest(`${BASE}/9999`, 'PUT', edited),
+      detailContext(9999),
+    )
+    expect(missing.status).toBe(404)
+    expect((await missing.json()).error.code).toBe('NOT_FOUND')
+  })
+
+  it('API-10: another member email conflicts with 409, keeping own email succeeds', async () => {
+    const conflict = await putMemberHandler(
+      jsonRequest(`${BASE}/2047`, 'PUT', { ...edited, email: 'sarah.jenkins@membercore.internal' }),
+      detailContext(2047),
+    )
+    expect(conflict.status).toBe(409)
+    expect((await conflict.json()).error.code).toBe('CONFLICT')
+
+    const own = await putMemberHandler(
+      jsonRequest(`${BASE}/2048`, 'PUT', edited),
+      detailContext(2048),
+    )
+    expect(own.status).toBe(200)
   })
 })
