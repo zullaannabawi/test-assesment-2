@@ -274,6 +274,11 @@ textarea {
   box-shadow: var(--shadow-card);
 }
 
+.members-table .members-table__check {
+  width: 44px;
+  text-align: center;
+}
+
 .members-table th {
   text-align: left;
   font-size: 12px;
@@ -337,6 +342,26 @@ textarea {
 .empty-state__icon { color: var(--color-text-faint); }
 .empty-state__description { max-width: 360px; }
 .empty-state .btn { margin-top: 8px; }
+
+/* ---------- bulk action bar ---------- */
+
+.bulk-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--color-primary-soft);
+  border: 1px solid var(--color-primary-border);
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  margin-bottom: 10px;
+}
+
+.bulk-action-bar__count {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-primary-strong);
+}
 
 /* ---------- dashboard template ---------- */
 

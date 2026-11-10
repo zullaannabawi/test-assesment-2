@@ -6,18 +6,42 @@ import type { Member } from '@/features/member-dashboard/domain/member'
 import { formatDate, shortStatus } from '@/shared/lib/formatters'
 import { Avatar } from '../atoms/avatar'
 import { Badge } from '../atoms/badge'
+import { Checkbox } from '../atoms/checkbox'
 
 interface MembersTableProps {
   members: Member[]
+  selectedIds?: number[]
+  onToggleSelectMember?: (id: number) => void
+  /** Header checkbox — toggles every displayed id. */
+  onToggleSelectAll?: () => void
   /** Wired in the delete-flows step; until then the trash icon is inert. */
   onDeleteMember?: (member: Member) => void
 }
 
-export function MembersTable({ members, onDeleteMember }: MembersTableProps) {
+export function MembersTable({
+  members,
+  selectedIds = [],
+  onToggleSelectMember,
+  onToggleSelectAll,
+  onDeleteMember,
+}: MembersTableProps) {
+  const displayedIds = members.map((member) => member.id)
+  const selectedCount = displayedIds.filter((id) => selectedIds.includes(id)).length
+  const allSelected = displayedIds.length > 0 && selectedCount === displayedIds.length
+  const someSelected = selectedCount > 0 && !allSelected
+
   return (
     <table className="members-table">
       <thead>
         <tr>
+          <th scope="col" className="members-table__check">
+            <Checkbox
+              aria-label="Select all members"
+              checked={allSelected}
+              indeterminate={someSelected}
+              onChange={onToggleSelectAll}
+            />
+          </th>
           <th scope="col">Member</th>
           <th scope="col">Role / Title</th>
           <th scope="col">Department</th>
@@ -31,6 +55,13 @@ export function MembersTable({ members, onDeleteMember }: MembersTableProps) {
       <tbody>
         {members.map((member) => (
           <tr key={member.id} className="members-table__row">
+            <td className="members-table__check">
+              <Checkbox
+                aria-label={`Select ${member.full_name}`}
+                checked={selectedIds.includes(member.id)}
+                onChange={() => onToggleSelectMember?.(member.id)}
+              />
+            </td>
             <td>
               <span className="members-table__member">
                 <Avatar name={member.full_name} />
