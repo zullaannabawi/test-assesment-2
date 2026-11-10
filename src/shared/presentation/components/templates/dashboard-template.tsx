@@ -8,16 +8,25 @@ import {
   fetchMembers,
   fetchMemberStats,
 } from '@/shared/presentation/store/actions/member-dashboard.action'
+import {
+  toggleSelectedMember,
+  toggleSelectAllMembers,
+} from '@/shared/presentation/store/slices/member-dashboard.slice'
 import { useDebouncedValue } from '@/shared/presentation/hooks/use-debounced-value'
+import { downloadCsv, toCsv, type MemberCsvRow } from '@/shared/lib/csv'
+import { Button } from '../atoms/button'
 import { Text } from '../atoms/text'
 import { SearchBar } from '../molecules/search-bar'
 import { StatCardsRow } from '../organisms/stat-cards-row'
 import { MembersTable } from '../organisms/members-table'
 import { EmptyState } from '../organisms/empty-state'
+import { BulkActionBar } from '../organisms/bulk-action-bar'
 
 export function DashboardTemplate() {
   const dispatch = useAppDispatch()
-  const { members, listStatus, stats } = useAppSelector((state) => state.memberDashboard)
+  const { members, listStatus, stats, selectedIds } = useAppSelector(
+    (state) => state.memberDashboard,
+  )
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebouncedValue(search, 300)
 
@@ -38,6 +47,21 @@ export function DashboardTemplate() {
     dispatch(fetchMembers())
   }
 
+  /** Exports exactly the rows on screen (the filtered list), client-side. */
+  const handleExportCsv = () => {
+    const rows: MemberCsvRow[] = members.map(
+      ({ full_name, email, job_title, department, account_status, joined_at }) => ({
+        full_name,
+        email,
+        job_title,
+        department,
+        account_status,
+        joined_at,
+      }),
+    )
+    downloadCsv('members.csv', toCsv(rows))
+  }
+
   const showEmptyState = listStatus === 'succeeded' && members.length === 0
 
   return (
@@ -52,7 +76,9 @@ export function DashboardTemplate() {
           </Text>
         </div>
         <div className="dashboard__actions">
-          {/* Export CSV arrives with the selection/bulk/export step */}
+          <Button variant="secondary" onClick={handleExportCsv}>
+            Export CSV
+          </Button>
           <Link className="btn btn--primary" href="/members/new">
             <Plus size={16} aria-hidden="true" />
             Add Member
@@ -66,7 +92,17 @@ export function DashboardTemplate() {
       {showEmptyState ? (
         <EmptyState actionLabel="Clear search" onAction={handleClearSearch} />
       ) : (
-        <MembersTable members={members} />
+        <>
+          <BulkActionBar count={selectedIds.length} />
+          <MembersTable
+            members={members}
+            selectedIds={selectedIds}
+            onToggleSelectMember={(id) => dispatch(toggleSelectedMember(id))}
+            onToggleSelectAll={() =>
+              dispatch(toggleSelectAllMembers(members.map((member) => member.id)))
+            }
+          />
+        </>
       )}
     </main>
   )
