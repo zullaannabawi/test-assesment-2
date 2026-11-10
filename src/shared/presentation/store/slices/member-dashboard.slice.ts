@@ -1,6 +1,10 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { Member, MemberStats } from '@/features/member-dashboard/domain/member'
-import { fetchMembers, fetchMemberStats } from '../actions/member-dashboard.action'
+import {
+  fetchMemberById,
+  fetchMembers,
+  fetchMemberStats,
+} from '../actions/member-dashboard.action'
 
 type AsyncStatus = 'idle' | 'loading' | 'succeeded' | 'failed'
 
@@ -11,6 +15,9 @@ export interface MemberDashboardState {
   stats: MemberStats | null
   statsStatus: AsyncStatus
   selectedIds: number[]
+  /** Edit page load — the member fetched by route id. */
+  detail: Member | null
+  detailStatus: AsyncStatus
 }
 
 const initialState: MemberDashboardState = {
@@ -20,6 +27,8 @@ const initialState: MemberDashboardState = {
   stats: null,
   statsStatus: 'idle',
   selectedIds: [],
+  detail: null,
+  detailStatus: 'idle',
 }
 
 const memberDashboardSlice = createSlice({
@@ -74,6 +83,17 @@ const memberDashboardSlice = createSlice({
       })
       .addCase(fetchMemberStats.rejected, (state) => {
         state.statsStatus = 'failed'
+      })
+      .addCase(fetchMemberById.pending, (state) => {
+        state.detailStatus = 'loading'
+        state.detail = null
+      })
+      .addCase(fetchMemberById.fulfilled, (state, action) => {
+        state.detailStatus = 'succeeded'
+        state.detail = action.payload
+      })
+      .addCase(fetchMemberById.rejected, (state) => {
+        state.detailStatus = 'failed'
       })
   },
 })

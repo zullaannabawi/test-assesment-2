@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import type { ListMembersFilter, Member, MemberStats } from '@/features/member-dashboard/domain/member'
 import {
+  getMemberByIdController,
   getMembersController,
   getMemberStatsController,
 } from '@/features/member-dashboard/controllers/member-dashboard.controller'
@@ -13,4 +14,9 @@ export const fetchMembers = createAsyncThunk<Member[], ListMembersFilter | undef
 export const fetchMemberStats = createAsyncThunk<MemberStats, void>(
   'memberDashboard/fetchMemberStats',
   () => getMemberStatsController(),
+)
+
+export const fetchMemberById = createAsyncThunk<Member, number>(
+  'memberDashboard/fetchMemberById',
+  (id) => getMemberByIdController(id),
 )
