@@ -3,7 +3,7 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Provider } from 'react-redux'
 import { makeStore } from '@/shared/presentation/store'
-import { MemberFormTemplate } from '@/shared/presentation/components/templates/member-form-template'
+import { MemberFormPage } from '@/features/member-form/presentation/pages/member-form'
 import { createMemberController } from '../controllers/member-form.controller'
 import {
   ACCOUNT_STATUSES,
@@ -44,7 +44,7 @@ const created: Member = {
 function renderAddPage() {
   return render(
     <Provider store={makeStore()}>
-      <MemberFormTemplate mode="create" />
+      <MemberFormPage mode="create" />
     </Provider>,
   )
 }

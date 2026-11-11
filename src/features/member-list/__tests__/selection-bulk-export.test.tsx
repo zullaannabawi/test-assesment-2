@@ -7,7 +7,7 @@ import {
   toggleSelectedMember,
   toggleSelectAllMembers,
 } from '@/shared/presentation/store/slices/member-list.slice'
-import { DashboardTemplate } from '@/shared/presentation/components/templates/dashboard-template'
+import { MemberListPage } from '@/features/member-list/presentation/pages/member-list'
 import { downloadCsv, toCsv, type MemberCsvRow } from '@/shared/lib/csv'
 import {
   getMembersController,
@@ -70,7 +70,7 @@ const stats: MemberStats = {
 function renderDashboard() {
   return render(
     <Provider store={makeStore()}>
-      <DashboardTemplate />
+      <MemberListPage />
     </Provider>,
   )
 }

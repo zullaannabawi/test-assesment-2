@@ -20,17 +20,18 @@ import {
 import { confirmDeleteMembers } from '@/shared/presentation/store/actions/member-deletion.action'
 import { useDebouncedValue } from '@/shared/presentation/hooks/use-debounced-value'
 import { downloadCsv, toCsv, type MemberCsvRow } from '@/shared/lib/csv'
-import { Button } from '../atoms/button'
-import { Text } from '../atoms/text'
-import { SearchBar } from '../molecules/search-bar'
-import { StatCardsRow } from '../organisms/stat-cards-row'
-import { MembersTable } from '../organisms/members-table'
-import { EmptyState } from '../organisms/empty-state'
-import { BulkActionBar } from '../organisms/bulk-action-bar'
-import { ConfirmDialog } from '../organisms/confirm-dialog'
-import { SuccessModal } from '../organisms/success-modal'
+import { Button } from '@/shared/presentation/components/atoms/button'
+import { Text } from '@/shared/presentation/components/atoms/text'
+import { SearchBar } from '@/shared/presentation/components/molecules/search-bar'
+import { StatCardsRow } from '@/shared/presentation/components/organisms/stat-cards-row'
+import { MembersTable } from '@/shared/presentation/components/organisms/members-table'
+import { EmptyState } from '@/shared/presentation/components/organisms/empty-state'
+import { BulkActionBar } from '@/shared/presentation/components/organisms/bulk-action-bar'
+import { ConfirmDialog } from '@/shared/presentation/components/organisms/confirm-dialog'
+import { SuccessModal } from '@/shared/presentation/components/organisms/success-modal'
 
-export function DashboardTemplate() {
+/** The Members Directory page: KPI cards, search, table, selection, delete flows. */
+export function MemberListPage() {
   const dispatch = useAppDispatch()
   const { members, listStatus, stats, selectedIds } = useAppSelector(
     (state) => state.memberList,
