@@ -1,7 +1,7 @@
 'use client'
 
 import type { ReactNode } from 'react'
-import { CheckCircle2 } from 'lucide-react'
+import { CheckCircle2, Trash2 } from 'lucide-react'
 import { Button } from '../atoms/button'
 import { Text } from '../atoms/text'
 
@@ -14,9 +14,14 @@ interface SuccessModalProps {
   onPrimary: () => void
   secondaryLabel?: string
   onSecondary?: () => void
+  /**
+   * 'danger' (delete popups per design): rose trash icon in a tinted chip and
+   * the actions sit on a light-indigo footer strip. 'success' keeps the
+   * green check layout used by the add/update popups.
+   */
+  tone?: 'success' | 'danger'
 }
 
-/** Generic success dialog — Added / Updated / Deleted (single & bulk). */
 export function SuccessModal({
   open,
   title,
@@ -25,14 +30,35 @@ export function SuccessModal({
   onPrimary,
   secondaryLabel,
   onSecondary,
+  tone = 'success',
 }: SuccessModalProps) {
   if (!open) {
     return null
   }
+
+  const actions = (
+    <>
+      {secondaryLabel && onSecondary ? (
+        <Button variant="secondary" onClick={onSecondary}>
+          {secondaryLabel}
+        </Button>
+      ) : null}
+      <Button variant="primary" onClick={onPrimary}>
+        {primaryLabel}
+      </Button>
+    </>
+  )
+
   return (
     <div className="modal-overlay">
       <div className="modal" role="dialog" aria-modal="true" aria-label={title}>
-        <CheckCircle2 className="modal__icon" size={36} aria-hidden="true" />
+        {tone === 'danger' ? (
+          <span className="modal__icon-chip" aria-hidden="true">
+            <Trash2 size={32} strokeWidth={2} />
+          </span>
+        ) : (
+          <CheckCircle2 className="modal__icon" size={36} aria-hidden="true" />
+        )}
         <Text as="h2" size="lg" weight="semibold">
           {title}
         </Text>
@@ -41,16 +67,12 @@ export function SuccessModal({
             {description}
           </Text>
         ) : null}
-        <div className="modal__actions">
-          {secondaryLabel && onSecondary ? (
-            <Button variant="secondary" onClick={onSecondary}>
-              {secondaryLabel}
-            </Button>
-          ) : null}
-          <Button variant="primary" onClick={onPrimary}>
-            {primaryLabel}
-          </Button>
-        </div>
+
+        {tone === 'danger' ? (
+          <div className="modal__footer">{actions}</div>
+        ) : (
+          <div className="modal__actions">{actions}</div>
+        )}
       </div>
     </div>
   )

@@ -489,7 +489,7 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(15, 23, 42, 0.45);
+  background: rgba(71, 85, 105, 0.55);
   z-index: 50;
 }
 
@@ -502,15 +502,41 @@ textarea {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-modal);
   padding: 28px 32px;
-  max-width: 400px;
+  max-width: 480px;
   width: calc(100% - 48px);
   text-align: center;
+  overflow: hidden;
 }
 
 .modal h2 { font-size: 20px; }
 
 .modal__icon { color: var(--color-success); }
 .modal__icon--danger { color: var(--color-danger); }
+
+/* delete popups: rose trash icon in a tinted circular chip (per design) */
+.modal__icon-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: #ffe4e6;
+  color: #e11d48;
+  margin-bottom: 8px;
+}
+
+/* delete popups: actions on a full-bleed light-indigo footer strip */
+.modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: calc(100% + 64px);
+  margin: 20px -32px -28px;
+  padding: 24px 32px 26px;
+  background: #eff4ff;
+}
 
 .modal__description { color: #464555; font-size: 14px; }
 

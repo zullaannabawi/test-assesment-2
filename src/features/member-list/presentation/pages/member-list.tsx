@@ -148,6 +148,7 @@ export function MemberListPage() {
 
       <SuccessModal
         open={lastResult !== null}
+        tone="danger"
         title={
           lastResult && lastResult.deleted.length === 1
             ? 'Member Deleted Successfully'

@@ -96,11 +96,16 @@ describe('delete flows', () => {
     expect(mockedDelete).toHaveBeenCalledWith([2048])
 
     expect(await screen.findByText('Member Deleted Successfully')).toBeInTheDocument()
+    const successDialog = screen.getByRole('dialog')
     expect(
-      screen.getByText(
+      within(successDialog).getByText(
         'Sarah Jenkins (#MEM-2048) has been permanently removed from the workspace. All assigned permissions, active sessions, and access tokens have been revoked.',
       ),
     ).toBeInTheDocument()
+
+    // design: the delete popup carries a Dismiss button on the footer strip
+    await user.click(within(successDialog).getByRole('button', { name: 'Dismiss' }))
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
 
     // stats + list refetched once each after the delete
     expect(mockedGetMembers).toHaveBeenCalledTimes(1)
