@@ -4,6 +4,8 @@ import userEvent from '@testing-library/user-event'
 import { Provider } from 'react-redux'
 import { makeStore } from '@/shared/presentation/store'
 import { DashboardTemplate } from '@/shared/presentation/components/templates/dashboard-template'
+import { TopBar } from '@/shared/presentation/components/organisms/top-bar'
+import { StatCardsRow } from '@/shared/presentation/components/organisms/stat-cards-row'
 import {
   getMembersController,
   getMemberStatsController,
@@ -74,6 +76,7 @@ describe('dashboard page', () => {
     renderDashboard()
 
     expect(await screen.findByText('Sarah Jenkins')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Members Directory' })).toBeInTheDocument()
 
     expect(mockedGetMembers).toHaveBeenCalledTimes(1)
     expect(mockedGetStats).toHaveBeenCalledTimes(1)
@@ -103,7 +106,7 @@ describe('dashboard page', () => {
 
   it('MD-08: a typing burst debounces into exactly one refetch after 300ms', async () => {
     renderDashboard()
-    const input = await screen.findByPlaceholderText(/search members/i)
+    const input = await screen.findByPlaceholderText(/search by name/i)
 
     vi.useFakeTimers()
     try {
@@ -135,7 +138,7 @@ describe('dashboard page', () => {
       .mockResolvedValueOnce([]) // debounced search "ghost"
 
     renderDashboard()
-    const input = await screen.findByPlaceholderText(/search members/i)
+    const input = await screen.findByPlaceholderText(/search by name/i)
 
     await user.type(input, 'ghost')
     expect(await screen.findByText('No members found')).toBeInTheDocument()
@@ -147,6 +150,35 @@ describe('dashboard page', () => {
     expect(mockedGetMembers).toHaveBeenCalledTimes(1)
     expect(mockedGetMembers.mock.calls[0][0]).toBeUndefined()
     expect(await screen.findByText('Sarah Jenkins')).toBeInTheDocument()
-    expect(screen.getByPlaceholderText(/search members/i)).toHaveValue('')
+    expect(screen.getByPlaceholderText(/search by name/i)).toHaveValue('')
+  })
+})
+
+describe('design match (companion)', () => {
+  it('renders the static profile top bar', () => {
+    render(<TopBar />)
+
+    expect(screen.getByText('Alex Vance')).toBeInTheDocument()
+    expect(screen.getByText('Lead Architect')).toBeInTheDocument()
+  })
+
+  it('renders the four design KPI cards with sub-labels from the stats', () => {
+    render(<StatCardsRow stats={stats} />)
+
+    expect(screen.getByText('Total Members')).toBeInTheDocument()
+    expect(screen.getByText('10')).toBeInTheDocument()
+    expect(screen.getByText('+1 this month')).toBeInTheDocument()
+
+    expect(screen.getByText('Active Now')).toBeInTheDocument()
+    expect(screen.getByText('8')).toBeInTheDocument()
+    expect(screen.getByText('80% live activity')).toBeInTheDocument()
+
+    expect(screen.getByText('Departments')).toBeInTheDocument()
+    expect(screen.getByText('2')).toBeInTheDocument()
+    expect(screen.getByText('2 active units')).toBeInTheDocument()
+
+    expect(screen.getByText('Pending Invites')).toBeInTheDocument()
+    expect(screen.getByText('5')).toBeInTheDocument()
+    expect(screen.getByText('3 expiring soon')).toBeInTheDocument()
   })
 })

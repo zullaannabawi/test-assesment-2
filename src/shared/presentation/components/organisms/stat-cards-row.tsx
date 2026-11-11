@@ -1,25 +1,41 @@
+import { Building2, Send, Users, Zap } from 'lucide-react'
 import type { MemberStats } from '@/features/member-list/domain/member'
 import { formatNumber } from '@/shared/lib/formatters'
 import { StatCard } from '../molecules/stat-card'
 
-/** The four KPI cards (pending invites / expiring are display-only per contract). */
+/**
+ * The four KPI cards per the design:
+ * Total Members (+N this month) · Active Now (% live activity) ·
+ * Departments (N active units) · Pending Invites (N expiring soon, amber).
+ * Pending invites / expiring are display-only per contract.
+ */
 export function StatCardsRow({ stats }: { stats: MemberStats | null }) {
   return (
     <section className="stat-cards-row" aria-label="Member statistics">
-      <StatCard label="Total Members" value={stats ? formatNumber(stats.total_members) : '—'} />
       <StatCard
-        label="New This Month"
-        value={stats ? formatNumber(stats.new_this_month) : '—'}
+        label="Total Members"
+        value={stats ? formatNumber(stats.total_members) : '—'}
+        subLabel={stats ? `+${stats.new_this_month} this month` : undefined}
+        icon={<Users size={18} aria-hidden="true" />}
       />
       <StatCard
         label="Active Now"
         value={stats ? formatNumber(stats.active_now) : '—'}
-        hint={stats ? `${stats.activity_rate}% live activity` : undefined}
+        subLabel={stats ? `${stats.activity_rate}% live activity` : undefined}
+        icon={<Zap size={18} aria-hidden="true" />}
+      />
+      <StatCard
+        label="Departments"
+        value={stats ? formatNumber(stats.departments) : '—'}
+        subLabel={stats ? `${stats.active_units} active units` : undefined}
+        icon={<Building2 size={18} aria-hidden="true" />}
       />
       <StatCard
         label="Pending Invites"
         value={stats ? formatNumber(stats.pending_invites) : '—'}
-        hint={stats ? `${stats.expiring_soon} expiring soon` : undefined}
+        subLabel={stats ? `${stats.expiring_soon} expiring soon` : undefined}
+        subTone="warning"
+        icon={<Send size={18} aria-hidden="true" />}
       />
     </section>
   )

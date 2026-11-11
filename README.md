@@ -1,6 +1,6 @@
-# Member Dashboard — MemberCore
+# Members Directory — MemberCore
 
-Frontend-only management dashboard for organization members, built with a pragmatic TDD workflow on top of Clean Architecture, FDD (feature-driven slicing) and Atomic Design. The backend is a mock API implemented as Next.js route handlers with an in-memory store.
+Frontend-only members directory dashboard, built with a pragmatic TDD workflow on top of Clean Architecture, FDD (feature-driven slicing) and Atomic Design. The backend is a mock API implemented as Next.js route handlers with an in-memory store. UI reference designs live in `docs/design/` (screen: `member-list-normal.png`).
 
 ## Stack
 
@@ -66,7 +66,7 @@ Coverage notes: every step ended `test` + `typecheck` green (see git history: st
 
 ## Manual walkthrough (8 states)
 
-1. **Dashboard default** — 4 KPI cards (10 total / 1 new this month / 8 active now, 80% / 5 pending invites) + table of the 10 seed members, sorted by joined date desc.
+1. **Dashboard default** — top profile bar (Alex Vance) + 4 KPI cards (Total Members 10 "+1 this month" · Active Now 8 "80% live activity" · Departments 2 "2 active units" · Pending Invites 5 "3 expiring soon") + table of the 10 seed members, sorted by joined date desc.
 2. **Search empty state** — search `Samantha Williams` → "No members found" + **Clear search** → clicking it refetches the full list.
 3. **Delete single** — trash icon on Sarah Jenkins → confirm dialog → "Member Deleted Successfully" modal (permissions/sessions/tokens revoked) → row gone, KPIs refetch, selection resets.
 4. **Bulk delete** — select 4 rows via the header checkbox → bulk action bar "4 selected" → Delete → confirm → success modal.

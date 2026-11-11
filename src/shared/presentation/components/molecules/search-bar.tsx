@@ -14,7 +14,7 @@ export function SearchBar({
   value,
   onChange,
   onClear,
-  placeholder = 'Search members...',
+  placeholder = 'Search by name, email, or role...',
 }: SearchBarProps) {
   return (
     <div className="search-bar">
