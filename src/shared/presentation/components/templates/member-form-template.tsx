@@ -14,7 +14,7 @@ import {
   dismissDeletionResult,
 } from '@/shared/presentation/store/slices/member-deletion.slice'
 import type { Member } from '@/features/member-list/domain/member'
-import { formatDate, formatMemberCode, shortStatus } from '@/shared/lib/formatters'
+import { formatMemberCode, formatMonthYear, shortStatus } from '@/shared/lib/formatters'
 import { Button } from '../atoms/button'
 import { Badge } from '../atoms/badge'
 import { Text } from '../atoms/text'
@@ -108,10 +108,10 @@ export function MemberFormTemplate({ mode, memberId }: MemberFormTemplateProps) 
               <Link className="member-header__back" href="/" aria-label="Back to dashboard">
                 <ArrowLeft size={18} aria-hidden="true" />
               </Link>
-              <Text as="h1" size="xl" weight="bold">
+              <Text as="h1" size="xl" weight="semibold">
                 {editMember.full_name}
               </Text>
-              <Badge tone={editMember.account_status.startsWith('Active') ? 'success' : 'warning'}>
+              <Badge tone={editMember.account_status.startsWith('Active') ? 'sky' : 'warning'}>
                 <span className="badge__dot" aria-hidden="true" />
                 {shortStatus(editMember.account_status)}
               </Badge>
@@ -120,9 +120,12 @@ export function MemberFormTemplate({ mode, memberId }: MemberFormTemplateProps) 
           </div>
           <div className="member-header__meta">
             <span className="id-pill">ID: {formatMemberCode(editMember.id)}</span>
+            <span className="member-header__sep" aria-hidden="true">
+              •
+            </span>
             <span className="member-header__joined">
               <Calendar size={14} aria-hidden="true" />
-              Joined {formatDate(editMember.joined_at)}
+              Joined {formatMonthYear(editMember.joined_at)}
             </span>
           </div>
         </header>

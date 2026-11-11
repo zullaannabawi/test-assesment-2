@@ -74,14 +74,11 @@ describe('add member page', () => {
       expect(screen.getByLabelText(new RegExp(label, 'i'))).toBeInTheDocument()
     }
 
-    // helper text on every field
-    expect(screen.getByText('As displayed across the dashboard')).toBeInTheDocument()
-    expect(screen.getByText('Work address for invitations and notifications')).toBeInTheDocument()
-    expect(screen.getByText('Controls workspace access level')).toBeInTheDocument()
-    expect(screen.getByText('Shown in the Role / Title column')).toBeInTheDocument()
-    expect(screen.getByText('Team this member belongs to')).toBeInTheDocument()
-    expect(screen.getByText('Permanent or contract engagement')).toBeInTheDocument()
-    expect(screen.getByText('Optional notes — only visible to admins')).toBeInTheDocument()
+    // helper texts — only the three fields that carry one per the design JSON
+    expect(screen.getByText('Displayed publicly across collaborative repositories.')).toBeInTheDocument()
+    expect(screen.getByText('Used for SSO sign-in and security notifications.')).toBeInTheDocument()
+    expect(screen.getByText('Controls login eligibility across organization SSO.')).toBeInTheDocument()
+    expect(screen.queryByText('Team this member belongs to')).not.toBeInTheDocument()
 
     // required markers on the four required fields
     for (const id of ['full_name', 'email', 'job_title', 'department']) {

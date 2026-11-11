@@ -4,6 +4,7 @@ import {
   avatarInitials,
   shortStatus,
   formatDate,
+  formatMonthYear,
   formatNumber,
 } from '../formatters'
 import { ACCOUNT_STATUSES } from '@/shared/constants/enums'
@@ -30,6 +31,11 @@ describe('shared/lib/formatters', () => {
   it('SH-05: formatDate renders the displayed date without a timezone shift', () => {
     expect(formatDate('2022-02-14')).toBe('Feb 14, 2022')
     expect(formatDate('2022-01-01')).toBe('Jan 1, 2022')
+  })
+
+  it('companion: formatMonthYear renders the full month and year (design header)', () => {
+    expect(formatMonthYear('2022-03-14')).toBe('March 2022')
+    expect(formatMonthYear('2022-02-14')).toBe('February 2022')
   })
 
   it('SH-06: formatNumber groups thousands with a comma', () => {

@@ -90,7 +90,7 @@ describe('member detail / edit page', () => {
     renderEditPage(2048)
 
     expect(await screen.findByText(/#MEM-2048/)).toBeInTheDocument()
-    expect(screen.getByText('Joined Feb 14, 2022')).toBeInTheDocument()
+    expect(screen.getByText('Joined February 2022')).toBeInTheDocument()
 
     const card = screen.getByRole('region', { name: /profile/i })
     expect(within(card).getByText('SJ')).toBeInTheDocument()

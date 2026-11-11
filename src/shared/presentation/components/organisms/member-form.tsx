@@ -78,14 +78,16 @@ export function MemberForm({ mode, member, onCancel, footerLeft }: MemberFormPro
             General Information
           </Text>
           <Text size="sm" className="form-section__subtitle">
-            Update personal records, contact credentials, and communication metadata.
+            {mode === 'create'
+              ? 'Add personal records, contact credentials, and communication metadata.'
+              : 'Update personal records, contact credentials, and communication metadata.'}
           </Text>
           <div className="form-section__grid">
             <FormField
               label="Full Name"
               htmlFor="full_name"
               required
-              helper="As displayed across the dashboard"
+              helper="Displayed publicly across collaborative repositories."
               error={errorFor('full_name')}
             >
               <Input
@@ -98,7 +100,7 @@ export function MemberForm({ mode, member, onCancel, footerLeft }: MemberFormPro
               label="Work Email"
               htmlFor="email"
               required
-              helper="Work address for invitations and notifications"
+              helper="Used for SSO sign-in and security notifications."
               error={errorFor('email')}
             >
               <Input
@@ -112,7 +114,7 @@ export function MemberForm({ mode, member, onCancel, footerLeft }: MemberFormPro
               label="Account Status"
               htmlFor="account_status"
               fullWidth
-              helper="Controls workspace access level"
+              helper="Controls login eligibility across organization SSO."
               error={errorFor('account_status')}
             >
               <Select
@@ -144,7 +146,6 @@ export function MemberForm({ mode, member, onCancel, footerLeft }: MemberFormPro
               label="Job Title"
               htmlFor="job_title"
               required
-              helper="Shown in the Role / Title column"
               error={errorFor('job_title')}
             >
               <Input
@@ -157,7 +158,6 @@ export function MemberForm({ mode, member, onCancel, footerLeft }: MemberFormPro
               label="Department"
               htmlFor="department"
               required
-              helper="Team this member belongs to"
               error={errorFor('department')}
             >
               <Select
@@ -179,7 +179,6 @@ export function MemberForm({ mode, member, onCancel, footerLeft }: MemberFormPro
               label="Employment Type"
               htmlFor="employment_type"
               fullWidth
-              helper="Permanent or contract engagement"
               error={errorFor('employment_type')}
             >
               <Select
@@ -198,7 +197,6 @@ export function MemberForm({ mode, member, onCancel, footerLeft }: MemberFormPro
               label="Bio & Administrative Notes"
               htmlFor="bio"
               fullWidth
-              helper="Optional notes — only visible to admins"
               error={errorFor('bio')}
             >
               <Textarea

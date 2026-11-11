@@ -32,7 +32,7 @@ ID stabil, dipetakan 1:1 ke nama test: `it('MF-01: ...')`.
 
 | ID | Skenario | Input / Prekondisi | Expected Result |
 |----|----------|--------------------|-----------------|
-| MF-12 | render form | render MemberForm (mode create) | 2 section (General Information; Work Details & Permissions), 7 field + helper text, tanda `*` wajib, opsi dropdown dari konstanta enum |
+| MF-12 | render form | render MemberForm (mode create) | 2 section (General Information; Work Details & Permissions), 7 field, helper text hanya di Full Name/Work Email/Account Status (per design JSON), tanda `*` wajib, opsi dropdown dari konstanta enum |
 | MF-13 | validasi klien | submit dengan field wajib kosong | pesan inline per field; thunk TIDAK di-dispatch |
 | MF-14 | error server dipetakan ke field | thunk reject 409 / 422 `{fields}` | field email ditandai konflik; fields 422 muncul di input terkait |
 | MF-15 | modal sukses add & update | (a) create sukses; (b) update sukses | (a) "Member Added Successfully" + nama + `#MEM-{id}` + Back to Dashboard; (b) "Member Updated Successfully" + Continue Editing (tutup modal, tetap di form) / Back (navigasi `/`) |

@@ -18,6 +18,21 @@ const MONTHS_SHORT = [
   'Dec',
 ] as const
 
+const MONTHS_FULL = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+] as const
+
 /** `2048` → `#MEM-2048` (display code; the raw id is what travels in URLs/bodies). */
 export function formatMemberCode(id: number): string {
   return `#MEM-${id}`
@@ -41,6 +56,12 @@ export function shortStatus(status: string): string {
 export function formatDate(isoDate: string): string {
   const [year, month, day] = isoDate.split('-').map(Number)
   return `${MONTHS_SHORT[month - 1]} ${day}, ${year}`
+}
+
+/** `2022-02-14` → `February 2022` (edit-page header per design). */
+export function formatMonthYear(isoDate: string): string {
+  const [year, month] = isoDate.split('-').map(Number)
+  return `${MONTHS_FULL[month - 1]} ${year}`
 }
 
 /** `1489` → `1,489` — deterministic thousands grouping (no ICU dependency). */
