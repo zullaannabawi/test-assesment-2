@@ -18,7 +18,7 @@ function mockRepo(overrides: Partial<MemberRepository> = {}): MemberRepository {
   }
 }
 
-describe('member-dashboard use cases', () => {
+describe('member-list use cases', () => {
   it('MD-01: getMembers normalizes the filter before calling the repository', async () => {
     const repo = mockRepo()
 

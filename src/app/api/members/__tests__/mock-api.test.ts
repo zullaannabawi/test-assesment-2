@@ -3,7 +3,7 @@ import { GET as getMembersHandler, POST as postMemberHandler, DELETE as deleteMe
 import { GET as getMemberByIdHandler, PUT as putMemberHandler } from '../[id]/route'
 import { GET as getMemberStatsHandler } from '../stats/route'
 import { computeStats } from '../_shared/compute-stats'
-import { ACCOUNT_STATUSES, EMPLOYMENT_TYPES } from '@/features/member-dashboard/domain/member'
+import { ACCOUNT_STATUSES, EMPLOYMENT_TYPES } from '@/features/member-list/domain/member'
 import { resetMemberStore, SEED_MEMBERS } from '../mocks'
 
 const BASE = 'http://localhost:3000/api/members'

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import {
   MemberEmailConflictError,
   MemberNotFoundError,
-} from '@/features/member-dashboard/domain/member-errors'
+} from '@/features/member-list/domain/member-errors'
 import { getMemberStore } from '../mocks'
 import { apiError } from '../_shared/api-error'
 import { parseMemberPayload } from '../_shared/member-payload'

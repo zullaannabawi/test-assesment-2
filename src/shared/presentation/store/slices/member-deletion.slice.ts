@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import type { DeleteResult } from '@/features/member-dashboard/domain/member'
+import type { DeleteResult } from '@/features/member-list/domain/member'
 import { confirmDeleteMembers } from '../actions/member-deletion.action'
 
 export interface MemberDeletionState {

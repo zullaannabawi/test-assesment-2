@@ -1,4 +1,4 @@
-# Test Cases — Member Dashboard (`src/features/member-dashboard`)
+# Test Cases — Member List (`src/features/member-list`)
 
 ID stabil, dipetakan 1:1 ke nama test: `it('MD-01: ...')`.
 

@@ -7,11 +7,11 @@ import { DashboardTemplate } from '@/shared/presentation/components/templates/da
 import {
   getMembersController,
   getMemberStatsController,
-} from '../controllers/member-dashboard.controller'
+} from '../controllers/member-list.controller'
 import { ACCOUNT_STATUSES, DEPARTMENTS, EMPLOYMENT_TYPES } from '../domain/member'
 import type { Member, MemberStats } from '../domain/member'
 
-vi.mock('../controllers/member-dashboard.controller', () => ({
+vi.mock('../controllers/member-list.controller', () => ({
   getMembersController: vi.fn(),
   getMemberStatsController: vi.fn(),
 }))

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { Trash2 } from 'lucide-react'
-import type { Member } from '@/features/member-dashboard/domain/member'
+import type { Member } from '@/features/member-list/domain/member'
 import { formatDate, shortStatus } from '@/shared/lib/formatters'
 import { Avatar } from '../atoms/avatar'
 import { Badge } from '../atoms/badge'

@@ -9,12 +9,12 @@ import {
   ACCOUNT_STATUSES,
   DEPARTMENTS,
   EMPLOYMENT_TYPES,
-} from '@/features/member-dashboard/domain/member'
-import type { Member } from '@/features/member-dashboard/domain/member'
+} from '@/features/member-list/domain/member'
+import type { Member } from '@/features/member-list/domain/member'
 import {
   MemberEmailConflictError,
   MemberValidationFieldsError,
-} from '@/features/member-dashboard/domain/member-errors'
+} from '@/features/member-list/domain/member-errors'
 
 const pushMock = vi.fn()
 vi.mock('next/navigation', () => ({

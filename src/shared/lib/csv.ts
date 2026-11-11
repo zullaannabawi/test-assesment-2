@@ -1,4 +1,4 @@
-import type { AccountStatus } from '@/features/member-dashboard/domain/member'
+import type { AccountStatus } from '@/features/member-list/domain/member'
 import { formatDate, shortStatus } from './formatters'
 
 /**

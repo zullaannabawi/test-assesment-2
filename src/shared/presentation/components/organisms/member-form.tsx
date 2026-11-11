@@ -8,8 +8,8 @@ import {
   ACCOUNT_STATUSES,
   DEPARTMENTS,
   EMPLOYMENT_TYPES,
-} from '@/features/member-dashboard/domain/member'
-import type { Member, MemberInput } from '@/features/member-dashboard/domain/member'
+} from '@/features/member-list/domain/member'
+import type { Member, MemberInput } from '@/features/member-list/domain/member'
 import { Button } from '../atoms/button'
 import { Input } from '../atoms/input'
 import { Select } from '../atoms/select'

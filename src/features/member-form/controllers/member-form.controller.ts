@@ -1,9 +1,9 @@
 import { createMemberRepository } from '@/composition/registry'
-import type { Member, MemberInput } from '@/features/member-dashboard/domain/member'
+import type { Member, MemberInput } from '@/features/member-list/domain/member'
 import { createMember } from '../use-cases/create-member'
 import { updateMember } from '../use-cases/update-member'
 
-/** Presentation-facing controller for the write model (repo interface owned by member-dashboard). */
+/** Presentation-facing controller for the write model (repo interface owned by member-list). */
 export function createMemberController(input: Partial<MemberInput>): Promise<Member> {
   return createMember(createMemberRepository(), input)
 }

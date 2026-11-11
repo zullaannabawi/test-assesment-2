@@ -6,17 +6,17 @@ import { makeStore } from '@/shared/presentation/store'
 import {
   toggleSelectedMember,
   toggleSelectAllMembers,
-} from '@/shared/presentation/store/slices/member-dashboard.slice'
+} from '@/shared/presentation/store/slices/member-list.slice'
 import { DashboardTemplate } from '@/shared/presentation/components/templates/dashboard-template'
 import { downloadCsv, toCsv, type MemberCsvRow } from '@/shared/lib/csv'
 import {
   getMembersController,
   getMemberStatsController,
-} from '../controllers/member-dashboard.controller'
+} from '../controllers/member-list.controller'
 import { ACCOUNT_STATUSES, DEPARTMENTS, EMPLOYMENT_TYPES } from '../domain/member'
 import type { Member, MemberStats } from '../domain/member'
 
-vi.mock('../controllers/member-dashboard.controller', () => ({
+vi.mock('../controllers/member-list.controller', () => ({
   getMembersController: vi.fn(),
   getMemberStatsController: vi.fn(),
 }))
@@ -150,20 +150,20 @@ describe('selection reducers (companion)', () => {
   it('toggleSelectedMember adds then removes a single id', () => {
     const store = makeStore()
     store.dispatch(toggleSelectedMember(2048))
-    expect(store.getState().memberDashboard.selectedIds).toEqual([2048])
+    expect(store.getState().memberList.selectedIds).toEqual([2048])
     store.dispatch(toggleSelectedMember(2048))
-    expect(store.getState().memberDashboard.selectedIds).toEqual([])
+    expect(store.getState().memberList.selectedIds).toEqual([])
   })
 
   it('toggleSelectAllMembers unions displayed ids, then removes exactly those on toggle-off', () => {
     const store = makeStore()
     store.dispatch(toggleSelectAllMembers([1, 2]))
-    expect(store.getState().memberDashboard.selectedIds).toEqual([1, 2])
+    expect(store.getState().memberList.selectedIds).toEqual([1, 2])
 
     store.dispatch(toggleSelectAllMembers([2, 3]))
-    expect(store.getState().memberDashboard.selectedIds).toEqual([1, 2, 3])
+    expect(store.getState().memberList.selectedIds).toEqual([1, 2, 3])
 
     store.dispatch(toggleSelectAllMembers([2, 3]))
-    expect(store.getState().memberDashboard.selectedIds).toEqual([1])
+    expect(store.getState().memberList.selectedIds).toEqual([1])
   })
 })

@@ -4,8 +4,8 @@ import {
   ACCOUNT_STATUSES,
   DEPARTMENTS,
   EMPLOYMENT_TYPES,
-} from '@/features/member-dashboard/domain/member'
-import type { MemberInput } from '@/features/member-dashboard/domain/member'
+} from '@/features/member-list/domain/member'
+import type { MemberInput } from '@/features/member-list/domain/member'
 
 const validInput: MemberInput = {
   full_name: 'Michael Phelps',

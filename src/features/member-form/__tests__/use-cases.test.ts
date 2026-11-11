@@ -1,16 +1,16 @@
 import { describe, it, expect, vi } from 'vitest'
-import type { MemberRepository } from '@/features/member-dashboard/use-cases/member-repository'
+import type { MemberRepository } from '@/features/member-list/use-cases/member-repository'
 import {
   MemberEmailConflictError,
   MemberNotFoundError,
   MemberValidationFieldsError,
-} from '@/features/member-dashboard/domain/member-errors'
+} from '@/features/member-list/domain/member-errors'
 import {
   ACCOUNT_STATUSES,
   DEPARTMENTS,
   EMPLOYMENT_TYPES,
-} from '@/features/member-dashboard/domain/member'
-import type { Member, MemberInput } from '@/features/member-dashboard/domain/member'
+} from '@/features/member-list/domain/member'
+import type { Member, MemberInput } from '@/features/member-list/domain/member'
 import { createMember } from '../use-cases/create-member'
 import { updateMember } from '../use-cases/update-member'
 

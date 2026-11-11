@@ -37,7 +37,7 @@ src/
 │   └── api/members/            # GET/POST/DELETE collection, GET/PUT [id], /stats
 │       └── mocks.ts            # 10-member seed + resetMemberStore()
 ├── features/                   # FDD slices
-│   ├── member-dashboard/       # read model: domain, use cases, infra, controller
+│   ├── member-list/       # read model: domain, use cases, infra, controller
 │   └── member-form/            # write model: validation + create/update use cases
 ├── shared/
 │   ├── lib/                    # pure helpers (formatters, csv, delay)
@@ -57,7 +57,7 @@ The catalogue in `docs/test-cases/` is the work order: stable IDs map 1:1 to `it
 | Prefix | Area |
 | --- | --- |
 | SH-01..09 | shared lib formatters/CSV + atoms & form-field |
-| MD-01..13 | member-dashboard use cases, API repository, dashboard page |
+| MD-01..13 | member-list use cases, API repository, dashboard page |
 | MF-01..15 | member-form validation, use cases, repository writes, form UI |
 | ME-01..05 | member detail / edit page |
 | API-01..12 | mock API route handlers (called directly with `new Request(...)`) |

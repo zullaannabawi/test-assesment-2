@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach } from 'vitest'
 import { createMemberRepository, setMemberRepository } from '../registry'
-import { ApiMemberRepository } from '@/features/member-dashboard/infrastructure/api/api-member-repository'
-import { InMemoryMemberRepository } from '@/features/member-dashboard/infrastructure/in-memory-member-repository'
+import { ApiMemberRepository } from '@/features/member-list/infrastructure/api/api-member-repository'
+import { InMemoryMemberRepository } from '@/features/member-list/infrastructure/in-memory-member-repository'
 
 afterEach(() => {
   setMemberRepository(null)

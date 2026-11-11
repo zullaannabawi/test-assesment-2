@@ -4,7 +4,7 @@ import {
   getMemberByIdController,
   getMemberStatsController,
   deleteMembersController,
-} from '../member-dashboard.controller'
+} from '../member-list.controller'
 import { setMemberRepository } from '@/composition/registry'
 import { InMemoryMemberRepository } from '../../infrastructure/in-memory-member-repository'
 import { ACCOUNT_STATUSES, DEPARTMENTS, EMPLOYMENT_TYPES } from '../../domain/member'
@@ -31,7 +31,7 @@ beforeEach(() => {
   setMemberRepository(new InMemoryMemberRepository([sarah]))
 })
 
-describe('member-dashboard controller wiring (companion)', () => {
+describe('member-list controller wiring (companion)', () => {
   it('delegates getMembers through the registry', async () => {
     const members = await getMembersController({ search: 'sarah' })
     expect(members).toHaveLength(1)

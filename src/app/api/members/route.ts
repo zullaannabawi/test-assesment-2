@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import type { ListMembersFilter } from '@/features/member-dashboard/domain/member'
-import { MemberEmailConflictError } from '@/features/member-dashboard/domain/member-errors'
+import type { ListMembersFilter } from '@/features/member-list/domain/member'
+import { MemberEmailConflictError } from '@/features/member-list/domain/member-errors'
 import { getMemberStore } from './mocks'
 import { apiError } from './_shared/api-error'
 import { parseMemberPayload } from './_shared/member-payload'

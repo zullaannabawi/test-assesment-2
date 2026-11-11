@@ -9,13 +9,13 @@ import {
   createMemberController,
   updateMemberController,
 } from '@/features/member-form/controllers/member-form.controller'
-import { MemberEmailConflictError } from '@/features/member-dashboard/domain/member-errors'
+import { MemberEmailConflictError } from '@/features/member-list/domain/member-errors'
 import {
   ACCOUNT_STATUSES,
   DEPARTMENTS,
   EMPLOYMENT_TYPES,
-} from '@/features/member-dashboard/domain/member'
-import type { Member, MemberInput } from '@/features/member-dashboard/domain/member'
+} from '@/features/member-list/domain/member'
+import type { Member, MemberInput } from '@/features/member-list/domain/member'
 
 vi.mock('@/features/member-form/controllers/member-form.controller', () => ({
   createMemberController: vi.fn(),
