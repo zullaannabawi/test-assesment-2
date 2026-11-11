@@ -502,7 +502,7 @@ textarea {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-modal);
   padding: 28px 32px;
-  max-width: 480px;
+  max-width: 500px;
   width: calc(100% - 48px);
   text-align: center;
   overflow: hidden;
@@ -518,12 +518,12 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 96px;
-  height: 96px;
+  width: 116px;
+  height: 116px;
   border-radius: 50%;
   background: #ffe4e6;
   color: #e11d48;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 /* delete popups: actions on a full-bleed light-indigo footer strip */
@@ -533,12 +533,20 @@ textarea {
   justify-content: center;
   gap: 8px;
   width: calc(100% + 64px);
-  margin: 20px -32px -28px;
-  padding: 24px 32px 26px;
+  margin: 16px -32px -28px;
+  padding: 28px 32px 30px;
   background: #eff4ff;
 }
 
-.modal__description { color: #464555; font-size: 14px; }
+/* design button on the delete popup: ~44px tall */
+.modal__footer .btn {
+  padding: 11px 18px;
+}
+
+.modal__description { color: #464555; font-size: 14px; line-height: 20px; max-width: 380px; }
+
+/* single-delete description renders dark per the design JSON (multiple stays gray) */
+.modal__description-dark { color: #0b1c30; }
 
 .modal__description strong { color: #0b1c30; font-weight: 600; }
 

@@ -157,7 +157,13 @@ export function MemberListPage() {
         description={
           lastResult
             ? lastResult.deleted.length === 1
-              ? `${lastResult.names[0] ?? 'The member'} (#MEM-${lastResult.deleted[0]}) has been permanently removed from the workspace. All assigned permissions, active sessions, and access tokens have been revoked.`
+              ? (
+              <span className="modal__description-dark">
+                {lastResult.names[0] ?? 'The member'} (#MEM-
+                {lastResult.deleted[0]}) has been permanently removed from the workspace. All
+                assigned permissions, active sessions, and access tokens have been revoked.
+              </span>
+            )
               : `${lastResult.deleted.length} members has been permanently removed from the workspace. All assigned permissions, active sessions, and access tokens have been revoked.`
             : undefined
         }

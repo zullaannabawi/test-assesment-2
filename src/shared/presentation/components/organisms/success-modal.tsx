@@ -54,7 +54,7 @@ export function SuccessModal({
       <div className="modal" role="dialog" aria-modal="true" aria-label={title}>
         {tone === 'danger' ? (
           <span className="modal__icon-chip" aria-hidden="true">
-            <Trash2 size={32} strokeWidth={2} />
+            <Trash2 size={36} strokeWidth={2} />
           </span>
         ) : (
           <CheckCircle2 className="modal__icon" size={36} aria-hidden="true" />
