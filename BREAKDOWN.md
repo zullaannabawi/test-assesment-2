@@ -1,59 +1,57 @@
-# Project Breakdown — Members Directory (MemberCore)
+# Project Breakdown — Test Assesment 2
 
-Frontend-only members directory dashboard with a mock API (Next.js route handlers + in-memory store), built test-first on Clean Architecture, FDD and Atomic Design.
+## 1. Alur Fitur
 
-## 1. Feature Flows
+### A. Members Directory (baca)
 
-### A. Members Directory (read)
+- Saat mount, halaman me-dispatch `fetchMembers` + `fetchMemberStats` tepat sekali → me-render 4 kartu KPI (Total Members *+N this month*, Active Now *% live activity*, Departments *N active units*, Pending Invites *N expiring soon*) dan tabel member (urut `joined_at` desc, avatar + nama/email per baris, pill department & status, tanggal join terformat, link Edit + ikon hapus per baris).
+- **Pencarian** di-debounce 300ms (`useDebouncedValue`), partial + case-insensitive di `full_name ∪ email ∪ job_title`. Tanpa hasil → empty state ("No members found", menyebut query aktif) dengan tombol **Clear search** yang me-refetch daftar penuh secara langsung (tanpa debounce).
+- **Seleksi**: checkbox per baris + select-all di header (status checked/indeterminate turunan); `selectedIds` dipangkas ke baris yang tampil setiap kali refetch.
+- **Export CSV** sepenuhnya client-side dari baris yang *tampil* (hasil filter) — header kontrak, status pendek, tanggal terformat, escaping RFC 4180.
 
-- On mount, the page dispatches `fetchMembers` + `fetchMemberStats` exactly once → renders 4 KPI cards (Total Members *+N this month*, Active Now *% live activity*, Departments *N active units*, Pending Invites *N expiring soon*) and the member table (sorted `joined_at` desc, avatar + name/email per row, department & status pills, formatted joined date, Edit link + delete icon per row).
-- **Search** is debounced 300ms (`useDebouncedValue`), partial + case-insensitive across `full_name ∪ email ∪ job_title`. No match → empty state ("No members found", quoting the query) with a **Clear search** button that refetches the full list immediately (no debounce).
-- **Selection**: row checkboxes + header select-all (checked/indeterminate derived state); `selectedIds` is pruned to displayed rows after every refetch.
-- **Export CSV** is fully client-side from the *displayed* (filtered) rows — contract header, short status, formatted dates, RFC 4180 escaping.
+### B. Alur hapus (tunggal & massal)
 
-### B. Delete flow (single & bulk)
+- Ikon trash atau tombol Delete di bulk bar → `requestDeletion` → **dialog konfirmasi** → `DELETE {ids}` → partisi `{deleted, failed}` (hard delete) → modal sukses (ikon trash rose, strip footer, tombol **Dismiss**) menyebut nama member; seleksi direset; list + stats di-refetch.
+- Menghapus dari halaman edit me-redirect ke `/` dan modal sukses tampil di dashboard (state Redux global).
 
-- Trash icon or bulk-bar Delete → `requestDeletion` → **confirm dialog** → `DELETE {ids}` → `{deleted, failed}` partition (hard delete) → success modal (rose trash icon, footer strip, **Dismiss**) with the member name(s); selection cleared; list + stats refetched.
-- Deleting from the edit page redirects to `/` and the success modal shows on the dashboard (global Redux state).
+### C. Tambah member
 
-### C. Add member
-
-- `/members/new` → two-section form (General Information; Work Details & Permissions), 7 fields, required markers, helper texts, dropdowns from the enum constants.
-- Client-side validation runs first (invalid → inline "Required"/messages, **no dispatch**). Valid → `POST` → "Member Added Successfully" modal with name + generated code (`#MEM-2049`) → Back to Dashboard.
+- `/members/new` → form dua section (General Information; Work Details & Permissions), 7 field, penanda wajib, helper text, dropdown dari konstanta enum.
+- Validasi client-side jalan duluan (invalid → pesan inline "Required"/error, **tanpa dispatch**). Valid → `POST` → modal "Member Added Successfully" dengan nama + kode hasil generate (`#MEM-2049`) → Back to Dashboard.
 
 ### D. Edit member
 
-- `/members/[id]/edit` → fetch by route id → pre-filled form in a two-column layout: left profile sidebar (avatar, name, role, email, repositories/deployments) + right form card with footer bar (**Delete Member** left, Cancel/Save right).
-- Header: back button, member name, status pill, monospace `ID: #MEM-2048` + "Joined February 2022", **Copy ID** → clipboard `#MEM-2048` + toast.
-- Save → `PUT` (server preserves `id`/`joined_at`/`activity`) → "Member Updated Successfully" (Continue Editing stays / Back to Dashboard). Unknown id → clean error state.
+- `/members/[id]/edit` → fetch berdasarkan id route → form ter-prefill dalam layout dua kolom: kiri sidebar profil (avatar, nama, role, email, repositories/deployments) + kanan kartu form dengan footer bar (**Delete Member** kiri, Cancel/Save kanan).
+- Header: tombol back, nama member, pill status, `ID: #MEM-2048` monospace + "Joined February 2022", **Copy ID** → clipboard `#MEM-2048` + toast.
+- Save → `PUT` (server menjaga `id`/`joined_at`/`activity`) → "Member Updated Successfully" (Continue Editing tetap di form / Back to Dashboard). Id tidak dikenal → error state yang bersih.
 
-### E. Error handling
+### E. Penanganan error
 
-- Typed domain errors flow end-to-end: `MemberNotFoundError` (404), `MemberEmailConflictError` (409 → marks the email field), `MemberValidationFieldsError` (422 → field-level inline errors), `EmptyDeletionSelectionError`, `ApiUnexpectedError`. The UI never inspects HTTP codes — the repository translates envelopes into these.
+- Error domain bertipe mengalir end-to-end: `MemberNotFoundError` (404), `MemberEmailConflictError` (409 → menandai field email), `MemberValidationFieldsError` (422 → error inline per field), `EmptyDeletionSelectionError`, `ApiUnexpectedError`. UI tidak pernah memeriksa kode HTTP — repository yang menerjemahkan envelope ke error-error ini.
 
-## 2. API Endpoints (mock, base `/api`)
+## 2. Endpoint API (mock, base `/api`)
 
-| Method | Path | Behavior |
+| Method | Path | Perilaku |
 |---|---|---|
-| GET | `/members` | List + filters: `search` (partial, case-insensitive, name∪email∪job_title), `status` (active/inactive prefix), `department` (exact); `sort` reserved (default `joined_at` desc); no pagination |
-| GET | `/members/stats` | KPIs: totals, new_this_month, active_now, activity_rate, departments, active_units, pending_invites (5), expiring_soon (3 — display-only constants) |
-| GET | `/members/[id]` | Single member incl. `activity`; 404 `NOT_FOUND` envelope |
-| POST | `/members` | Create; shared validation → 422 `VALIDATION_ERROR {fields}`; duplicate email (case-insensitive) → 409 `CONFLICT`; 201 with next id, `joined_at`=today, `activity {0,0}` |
-| PUT | `/members/[id]` | Full replacement preserving `id`/`joined_at`/`activity`; 404 / 422 / 409 (email owned by another member; keeping own email OK) |
-| DELETE | `/members` | Single & bulk via body `{ids: number[]}` (non-empty integer array else 422); hard delete; `200 {deleted:[], failed:[]}` |
+| GET | `/members` | List + filter: `search` (partial, case-insensitive, nama∪email∪job_title), `status` (prefix active/inactive), `department` (exact); `sort` reserved (default `joined_at` desc); tanpa pagination |
+| GET | `/members/stats` | KPI: total, new_this_month, active_now, activity_rate, departments, active_units, pending_invites (5), expiring_soon (3 — konstanta display-only) |
+| GET | `/members/[id]` | Member tunggal termasuk `activity`; 404 envelope `NOT_FOUND` |
+| POST | `/members` | Create; validasi bersama → 422 `VALIDATION_ERROR {fields}`; email duplikat (case-insensitive) → 409 `CONFLICT`; 201 dengan id berikutnya, `joined_at`=hari ini, `activity {0,0}` |
+| PUT | `/members/[id]` | Full replacement yang menjaga `id`/`joined_at`/`activity`; 404 / 422 / 409 (email milik member lain; email sendiri tetap boleh) |
+| DELETE | `/members` | Tunggal & massal via body `{ids: number[]}` (array integer non-kosong, selain itu 422); hard delete; `200 {deleted:[], failed:[]}` |
 
-Uniform error envelope: `{ error: { code, message, fields? } }`.
+Envelope error seragam: `{ error: { code, message, fields? } }`.
 
-## 3. Known Shortcomings
+## 3. Kekurangan yang Diketahui
 
-1. **No persistence** — the mock store is in-memory; data resets on restart (and would be per-instance on serverless).
-2. **No auth** — the profile bar (Alex Vance) is a static mock; no login/roles.
-3. **No pagination** — deliberate per scope; fine at ±150 members, needs `page`/`limit` at scale.
-4. **No filter/sort UI** — `status`/`department` params exist and are tested end-to-end, but the design only ships a search bar (blocked on designer confirmation); `sort` is reserved.
-5. **Invite flow out of scope** — pending invites / expiring soon are hardcoded display values.
-6. **Accessibility gaps** — solid basics (labels, `aria-describedby`, dialog roles) but no focus trap in modals and no formal contrast/keyboard audit.
-7. **No e2e tests / CI** — 98 unit/integration tests via mocked controllers; no Playwright, no pipeline, no lint config, no coverage threshold.
-8. **List-failure UI missing** — the slice tracks `listStatus: failed` but there's no dedicated error banner for a failed fetch.
-9. **Minor design deviations** — inline input icons deferred, KPI icon chips approximated, avatar tone rotation is id-based rather than the designer's exact assignments.
-10. **Cross-feature coupling** — `member-form` imports the repository interface and some presentation pieces from `member-list` (documented precedent; a shared member kernel would formalize it).
-11. **Responsive is basic** — grids collapse at breakpoints, but the design targets 1280px desktop only.
+1. **Tanpa persistensi** — store mock in-memory; data reset saat restart (dan per-instance di serverless).
+2. **Tanpa auth** — profile bar (Alex Vance) mock statis; tidak ada login/roles.
+3. **Tanpa pagination** — keputusan sadar sesuai scope; aman di ±150 member, butuh `page`/`limit` saat skala besar.
+4. **Tanpa UI filter/sort** — param `status`/`department` sudah ada dan dites end-to-end, tapi desain hanya menyediakan search bar (menunggu konfirmasi designer); `sort` reserved.
+5. **Alur invite di luar scope** — pending invites / expiring soon adalah nilai display hardcoded.
+6. **Gap aksesibilitas** — dasar sudah baik (label, `aria-describedby`, role dialog) tetapi belum ada focus trap di modal dan belum ada audit kontras/keyboard formal.
+7. **Tanpa e2e / CI** — 98 test unit/integrasi via controller yang di-mock; tanpa Playwright, tanpa pipeline, tanpa konfigurasi lint, tanpa threshold coverage.
+8. **UI list-failure belum ada** — slice mencatat `listStatus: failed` tetapi belum ada error banner khusus untuk fetch yang gagal.
+9. **Deviasi desain minor** — ikon inline di input ditunda, icon chip KPI masih aproksimasi, rotasi tone avatar berbasis id, bukan penetapan persis dari designer.
+10. **Kopling antar-feature** — `member-form` meng-import interface repository dan sebagian presentation dari `member-list` (preseden terdokumentasi; kernel "member" bersama akan membuatnya lebih formal).
+11. **Responsive masih dasar** — grid collapse di breakpoint, tapi desain hanya menarget desktop 1280px.
