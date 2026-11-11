@@ -47,8 +47,8 @@ export function MembersTable({
           <th scope="col">Department</th>
           <th scope="col">Status</th>
           <th scope="col">Joined Date</th>
-          <th scope="col">
-            <span className="visually-hidden">Actions</span>
+          <th scope="col" className="members-table__th-actions">
+            Actions
           </th>
         </tr>
       </thead>
@@ -73,10 +73,11 @@ export function MembersTable({
             </td>
             <td>{member.job_title}</td>
             <td>
-              <Badge tone="info">{member.department}</Badge>
+              <Badge tone="neutral">{member.department}</Badge>
             </td>
             <td>
-              <Badge tone={member.account_status.startsWith('Active') ? 'success' : 'neutral'}>
+              <Badge tone={member.account_status.startsWith('Active') ? 'success' : 'warning'}>
+                <span className="badge__dot" aria-hidden="true" />
                 {shortStatus(member.account_status)}
               </Badge>
             </td>

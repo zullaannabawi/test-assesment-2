@@ -1,15 +1,25 @@
+import type { ReactNode } from 'react'
+
 interface StatCardProps {
   label: string
   value: string | number
-  hint?: string
+  subLabel?: string
+  subTone?: 'info' | 'warning'
+  icon?: ReactNode
 }
 
-export function StatCard({ label, value, hint }: StatCardProps) {
+/** KPI card per design: uppercase label + icon chip, big value, sub-label pill. */
+export function StatCard({ label, value, subLabel, subTone = 'info', icon }: StatCardProps) {
   return (
     <div className="stat-card">
-      <p className="stat-card__label">{label}</p>
+      <div className="stat-card__top">
+        <p className="stat-card__label">{label}</p>
+        {icon ? <span className="stat-card__icon">{icon}</span> : null}
+      </div>
       <p className="stat-card__value">{value}</p>
-      {hint ? <p className="stat-card__hint">{hint}</p> : null}
+      {subLabel ? (
+        <span className={`stat-card__sub stat-card__sub--${subTone}`}>{subLabel}</span>
+      ) : null}
     </div>
   )
 }

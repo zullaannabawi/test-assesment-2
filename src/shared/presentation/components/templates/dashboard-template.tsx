@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Plus } from 'lucide-react'
+import { Download, Plus } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/shared/presentation/store/hooks'
 import {
   fetchMembers,
@@ -79,15 +79,17 @@ export function DashboardTemplate() {
     <main className="dashboard">
       <header className="dashboard__header">
         <div>
-          <Text as="h1" size="xl" weight="bold">
-            Member Dashboard
+          <Text as="h1" size="xl" weight="semibold">
+            Members Directory
           </Text>
           <Text size="sm" className="dashboard__subtitle">
-            Manage your organization team members, roles, and workspace access.
+            Manage your organization team members, cross-functional roles, and workspace access
+            levels.
           </Text>
         </div>
         <div className="dashboard__actions">
           <Button variant="secondary" onClick={handleExportCsv}>
+            <Download size={16} aria-hidden="true" />
             Export CSV
           </Button>
           <Link className="btn btn--primary" href="/members/new">
@@ -98,27 +100,29 @@ export function DashboardTemplate() {
       </header>
 
       <StatCardsRow stats={stats} />
-      <SearchBar value={search} onChange={setSearch} onClear={handleClearSearch} />
 
-      {showEmptyState ? (
-        <EmptyState actionLabel="Clear search" onAction={handleClearSearch} />
-      ) : (
-        <>
-          <BulkActionBar
-            count={selectedIds.length}
-            onDelete={() => dispatch(requestDeletion(selectedIds))}
-          />
-          <MembersTable
-            members={members}
-            selectedIds={selectedIds}
-            onToggleSelectMember={(id) => dispatch(toggleSelectedMember(id))}
-            onToggleSelectAll={() =>
-              dispatch(toggleSelectAllMembers(members.map((member) => member.id)))
-            }
-            onDeleteMember={(member) => dispatch(requestDeletion([member.id]))}
-          />
-        </>
-      )}
+      <div className="table-card">
+        <SearchBar value={search} onChange={setSearch} onClear={handleClearSearch} />
+        {showEmptyState ? (
+          <EmptyState actionLabel="Clear search" onAction={handleClearSearch} />
+        ) : (
+          <>
+            <BulkActionBar
+              count={selectedIds.length}
+              onDelete={() => dispatch(requestDeletion(selectedIds))}
+            />
+            <MembersTable
+              members={members}
+              selectedIds={selectedIds}
+              onToggleSelectMember={(id) => dispatch(toggleSelectedMember(id))}
+              onToggleSelectAll={() =>
+                dispatch(toggleSelectAllMembers(members.map((member) => member.id)))
+              }
+              onDeleteMember={(member) => dispatch(requestDeletion([member.id]))}
+            />
+          </>
+        )}
+      </div>
 
       <ConfirmDialog
         open={confirmingIds !== null}
