@@ -104,9 +104,15 @@ textarea {
   border-radius: var(--radius-sm);
   border: 1px solid transparent;
   padding: 8px 14px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+/* header/table actions are 12px; form & modal footers use 14px per design */
+.member-form__footer .btn,
+.modal .btn {
+  font-size: 14px;
 }
 
 .btn:disabled {
@@ -183,19 +189,23 @@ textarea {
 .badge {
   display: inline-flex;
   align-items: center;
+  gap: 5px;
   border-radius: 999px;
   padding: 2px 10px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   white-space: nowrap;
 }
 
-.badge--neutral { background: #f1f5f9; color: var(--color-text); }
+.badge--neutral { background: #f1f5f9; color: #0b1c30; }
 .badge--info { background: var(--color-primary-soft); color: var(--color-primary-strong); }
-.badge--success { background: var(--color-success-soft); color: var(--color-success); }
+.badge--success { background: var(--color-success-soft); color: #0b1c30; }
 .badge--sky { background: #e0f2fe; color: #006591; }
 .badge--danger { background: var(--color-danger-soft); color: var(--color-danger); }
-.badge--warning { background: #ffedd5; color: #ea580c; }
+.badge--warning { background: #ffedd5; color: #351000; }
+
+/* table status pills are semibold per design */
+.members-table__status { font-weight: 600; }
 
 .badge__dot {
   width: 6px;
@@ -211,12 +221,17 @@ textarea {
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: var(--color-primary-soft);
-  color: var(--color-primary-strong);
+  background: #eceafd;
+  color: #3525cd;
   font-size: 12px;
   font-weight: 600;
   flex-shrink: 0;
 }
+
+/* per-member tone rotation per the design row data */
+.avatar--sky { background: #e0f2fe; color: #006591; }
+.avatar--gray { background: #f1f5f9; color: #464555; }
+.avatar--amber { background: #ffedd5; color: #7e3000; }
 
 /* ---------- top profile bar ---------- */
 
@@ -259,7 +274,14 @@ textarea {
   color: var(--color-text-faint);
 }
 
-.search-bar__input { padding-left: 36px; padding-right: 36px; }
+.search-bar__input {
+  padding-left: 36px;
+  padding-right: 36px;
+  font-size: 12px;
+  color: #0b1c30;
+}
+
+.search-bar__input::placeholder { color: #777587; }
 
 .search-bar__clear {
   position: absolute;
@@ -304,10 +326,10 @@ textarea {
 
 .stat-card__label {
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--color-text-muted);
+  color: #464555;
   padding-top: 10px;
 }
 
@@ -329,12 +351,14 @@ textarea {
   align-self: flex-start;
   border-radius: 999px;
   padding: 2px 10px;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 11px;
+  font-weight: 600;
 }
 
-.stat-card__sub--info { background: var(--color-primary-soft); color: var(--color-primary-strong); }
-.stat-card__sub--warning { background: var(--color-warning-soft); color: #b45309; }
+.stat-card__sub--indigo { background: #eceafd; color: #3525cd; }
+.stat-card__sub--sky { background: #e0f2fe; color: #006591; }
+.stat-card__sub--gray { background: #f1f5f9; color: #464555; }
+.stat-card__sub--amber { background: #ffedd5; color: #7e3000; }
 
 /* ---------- members table ---------- */
 
@@ -365,11 +389,11 @@ textarea {
 
 .members-table th {
   text-align: left;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--color-text-muted);
+  color: #464555;
   background: #f8fafc;
   padding: 10px 16px;
   border-bottom: 1px solid var(--color-border);
@@ -390,13 +414,21 @@ textarea {
 
 .members-table__member-detail { display: flex; flex-direction: column; }
 
-.members-table__name { font-weight: 500; }
+.members-table__name { font-weight: 600; color: #0b1c30; }
 
-.members-table__email { font-size: 12px; color: var(--color-text-muted); }
+.members-table__email { font-size: 12px; color: #464555; }
+
+.members-table__role { font-size: 12px; font-weight: 500; color: #0b1c30; }
+
+.members-table__date {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  color: #464555;
+}
 
 .members-table__actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
 
-.members-table__edit { font-size: 13px; font-weight: 500; color: var(--color-primary); }
+.members-table__edit { font-size: 12px; font-weight: 500; color: #3525cd; }
 
 .members-table__delete {
   display: inline-flex;
@@ -426,7 +458,7 @@ textarea {
 }
 
 .empty-state__icon { color: var(--color-text-faint); }
-.empty-state__description { max-width: 360px; }
+.empty-state__description { max-width: 400px; font-size: 12px; color: #464555; }
 .empty-state .btn { margin-top: 8px; }
 
 /* ---------- bulk action bar ---------- */
@@ -475,10 +507,16 @@ textarea {
   text-align: center;
 }
 
+.modal h2 { font-size: 20px; }
+
 .modal__icon { color: var(--color-success); }
 .modal__icon--danger { color: var(--color-danger); }
 
-.modal__description { color: var(--color-text-muted); }
+.modal__description { color: #464555; font-size: 14px; }
+
+.modal__description strong { color: #0b1c30; font-weight: 600; }
+
+.member-code { color: #3525cd; font-size: 12px; }
 
 .modal__actions {
   display: flex;
@@ -729,7 +767,7 @@ textarea {
   margin-bottom: 20px;
 }
 
-.dashboard__subtitle { margin-top: 4px; }
+.dashboard__subtitle { margin-top: 4px; font-size: 14px; color: #464555; }
 
 .dashboard__actions { display: flex; align-items: center; gap: 8px; }
 

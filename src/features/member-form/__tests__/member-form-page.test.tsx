@@ -102,10 +102,8 @@ describe('add member page', () => {
 
     await user.click(screen.getByRole('button', { name: /save changes/i }))
 
-    expect(await screen.findByText('Full name is required')).toBeInTheDocument()
-    expect(screen.getByText('Work email is required')).toBeInTheDocument()
-    expect(screen.getByText('Job title is required')).toBeInTheDocument()
-    expect(screen.getByText('Department is required')).toBeInTheDocument()
+    // the design renders each missing-required field with the short "Required" marker
+    expect(await screen.findAllByText('Required')).toHaveLength(4)
     expect(mockedCreate).not.toHaveBeenCalled()
   })
 
@@ -124,10 +122,10 @@ describe('add member page', () => {
     ).toBeInTheDocument()
 
     mockedCreate.mockRejectedValue(
-      new MemberValidationFieldsError({ job_title: 'Job title is required' }),
+      new MemberValidationFieldsError({ job_title: 'Job title value is not valid' }),
     )
     await user.click(screen.getByRole('button', { name: /save changes/i }))
-    expect(await screen.findByText('Job title is required')).toBeInTheDocument()
+    expect(await screen.findByText('Job title value is not valid')).toBeInTheDocument()
   })
 
   it('MF-15: a successful create opens the Added modal with name, code and Back to Dashboard', async () => {
@@ -139,7 +137,8 @@ describe('add member page', () => {
 
     const modal = await screen.findByRole('dialog')
     expect(within(modal).getByText('Member Added Successfully')).toBeInTheDocument()
-    expect(within(modal).getByText('Michael Phelps (#MEM-2049)')).toBeInTheDocument()
+    expect(within(modal).getByText('Michael Phelps')).toBeInTheDocument()
+    expect(within(modal).getByText('#MEM-2049')).toBeInTheDocument()
 
     await user.click(within(modal).getByRole('button', { name: /back to dashboard/i }))
     expect(pushMock).toHaveBeenCalledWith('/')

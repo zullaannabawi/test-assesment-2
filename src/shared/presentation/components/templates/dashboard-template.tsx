@@ -35,9 +35,7 @@ export function DashboardTemplate() {
   const { members, listStatus, stats, selectedIds } = useAppSelector(
     (state) => state.memberList,
   )
-  const { confirmingIds, deleting, lastResult } = useAppSelector(
-    (state) => state.memberDeletion,
-  )
+  const { confirming, lastResult } = useAppSelector((state) => state.memberDeletion)
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebouncedValue(search, 300)
 
@@ -104,12 +102,25 @@ export function DashboardTemplate() {
       <div className="table-card">
         <SearchBar value={search} onChange={setSearch} onClear={handleClearSearch} />
         {showEmptyState ? (
-          <EmptyState actionLabel="Clear search" onAction={handleClearSearch} />
+          <EmptyState
+            description={`We couldn't find any members matching “${search}”. Try checking for typos or searching with different keywords.`}
+            actionLabel="Clear search"
+            onAction={handleClearSearch}
+          />
         ) : (
           <>
             <BulkActionBar
               count={selectedIds.length}
-              onDelete={() => dispatch(requestDeletion(selectedIds))}
+              onDelete={() =>
+                dispatch(
+                  requestDeletion({
+                    ids: selectedIds,
+                    names: members
+                      .filter((member) => selectedIds.includes(member.id))
+                      .map((member) => member.full_name),
+                  }),
+                )
+              }
             />
             <MembersTable
               members={members}
@@ -118,33 +129,37 @@ export function DashboardTemplate() {
               onToggleSelectAll={() =>
                 dispatch(toggleSelectAllMembers(members.map((member) => member.id)))
               }
-              onDeleteMember={(member) => dispatch(requestDeletion([member.id]))}
+              onDeleteMember={(member) =>
+                dispatch(requestDeletion({ ids: [member.id], names: [member.full_name] }))
+              }
             />
           </>
         )}
       </div>
 
       <ConfirmDialog
-        open={confirmingIds !== null}
-        title={
-          confirmingIds && confirmingIds.length === 1
-            ? 'Delete Member'
-            : `Delete ${confirmingIds?.length ?? 0} Members`
-        }
+        open={confirming !== null}
+        title={confirming && confirming.ids.length === 1 ? 'Delete Member' : `Delete ${confirming?.ids.length ?? 0} Members`}
         description="This permanently removes the selected members and revokes their permissions, sessions, and tokens."
-        onConfirm={() => confirmingIds && dispatch(confirmDeleteMembers(confirmingIds))}
+        onConfirm={() => confirming && dispatch(confirmDeleteMembers(confirming.ids))}
         onCancel={() => dispatch(cancelDeletion())}
       />
 
       <SuccessModal
         open={lastResult !== null}
-        title="Member Deleted Successfully"
+        title={
+          lastResult && lastResult.deleted.length === 1
+            ? 'Member Deleted Successfully'
+            : 'Members Deleted Successfully'
+        }
         description={
           lastResult
-            ? `${lastResult.deleted.length} ${lastResult.deleted.length === 1 ? 'member' : 'members'} deleted successfully. Their permissions, sessions, and tokens have been revoked.`
+            ? lastResult.deleted.length === 1
+              ? `${lastResult.names[0] ?? 'The member'} (#MEM-${lastResult.deleted[0]}) has been permanently removed from the workspace. All assigned permissions, active sessions, and access tokens have been revoked.`
+              : `${lastResult.deleted.length} members has been permanently removed from the workspace. All assigned permissions, active sessions, and access tokens have been revoked.`
             : undefined
         }
-        primaryLabel="Done"
+        primaryLabel="Dismiss"
         onPrimary={() => dispatch(dismissDeletionResult())}
       />
     </main>

@@ -4,12 +4,12 @@ interface StatCardProps {
   label: string
   value: string | number
   subLabel?: string
-  subTone?: 'info' | 'warning'
+  subTone?: 'indigo' | 'sky' | 'gray' | 'amber'
   icon?: ReactNode
 }
 
 /** KPI card per design: uppercase label + icon chip, big value, sub-label pill. */
-export function StatCard({ label, value, subLabel, subTone = 'info', icon }: StatCardProps) {
+export function StatCard({ label, value, subLabel, subTone = 'indigo', icon }: StatCardProps) {
   return (
     <div className="stat-card">
       <div className="stat-card__top">

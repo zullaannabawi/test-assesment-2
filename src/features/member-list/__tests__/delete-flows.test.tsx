@@ -98,7 +98,7 @@ describe('delete flows', () => {
     expect(await screen.findByText('Member Deleted Successfully')).toBeInTheDocument()
     expect(
       screen.getByText(
-        '1 member deleted successfully. Their permissions, sessions, and tokens have been revoked.',
+        'Sarah Jenkins (#MEM-2048) has been permanently removed from the workspace. All assigned permissions, active sessions, and access tokens have been revoked.',
       ),
     ).toBeInTheDocument()
 

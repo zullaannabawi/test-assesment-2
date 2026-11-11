@@ -8,6 +8,11 @@ import { Avatar } from '../atoms/avatar'
 import { Badge } from '../atoms/badge'
 import { Checkbox } from '../atoms/checkbox'
 
+/** Deterministic per-member avatar tone rotation (indigo/sky/gray/amber per design rows). */
+function avatarTone(id: number): string {
+  return ['', 'avatar--sky', 'avatar--gray', 'avatar--amber'][id % 4] ?? ''
+}
+
 interface MembersTableProps {
   members: Member[]
   selectedIds?: number[]
@@ -64,24 +69,31 @@ export function MembersTable({
             </td>
             <td>
               <span className="members-table__member">
-                <Avatar name={member.full_name} />
+                <Avatar name={member.full_name} className={avatarTone(member.id)} />
                 <span className="members-table__member-detail">
                   <span className="members-table__name">{member.full_name}</span>
                   <span className="members-table__email">{member.email}</span>
                 </span>
               </span>
             </td>
-            <td>{member.job_title}</td>
+            <td>
+              <span className="members-table__role">{member.job_title}</span>
+            </td>
             <td>
               <Badge tone="neutral">{member.department}</Badge>
             </td>
             <td>
-              <Badge tone={member.account_status.startsWith('Active') ? 'success' : 'warning'}>
+              <Badge
+                className="members-table__status"
+                tone={member.account_status.startsWith('Active') ? 'success' : 'warning'}
+              >
                 <span className="badge__dot" aria-hidden="true" />
                 {shortStatus(member.account_status)}
               </Badge>
             </td>
-            <td>{formatDate(member.joined_at)}</td>
+            <td>
+              <span className="members-table__date">{formatDate(member.joined_at)}</span>
+            </td>
             <td>
               <span className="members-table__actions">
                 <Link className="members-table__edit" href={`/members/${member.id}/edit`}>
