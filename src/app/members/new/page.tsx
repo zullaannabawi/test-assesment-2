@@ -1,7 +1,7 @@
 'use client'
 
-import { MemberFormTemplate } from '@/shared/presentation/components/templates/member-form-template'
+import { MemberFormPage } from '@/features/member-form/presentation/pages/member-form'
 
 export default function AddMemberPage() {
-  return <MemberFormTemplate mode="create" />
+  return <MemberFormPage mode="create" />
 }

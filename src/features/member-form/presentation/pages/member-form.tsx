@@ -15,22 +15,24 @@ import {
 } from '@/shared/presentation/store/slices/member-deletion.slice'
 import type { Member } from '@/features/member-list/domain/member'
 import { formatMemberCode, formatMonthYear, shortStatus } from '@/shared/lib/formatters'
-import { Button } from '../atoms/button'
-import { Badge } from '../atoms/badge'
-import { Text } from '../atoms/text'
-import { MemberForm } from '../organisms/member-form'
-import { SuccessModal } from '../organisms/success-modal'
-import { ConfirmDialog } from '../organisms/confirm-dialog'
-import { ProfileCard } from '../molecules/profile-card'
-import { CopyIdButton } from '../molecules/copy-id-button'
+import { Button } from '@/shared/presentation/components/atoms/button'
+import { Badge } from '@/shared/presentation/components/atoms/badge'
+import { Text } from '@/shared/presentation/components/atoms/text'
+import { MemberForm } from '@/shared/presentation/components/organisms/member-form'
+import { SuccessModal } from '@/shared/presentation/components/organisms/success-modal'
+import { ConfirmDialog } from '@/shared/presentation/components/organisms/confirm-dialog'
+import { ProfileCard } from '@/shared/presentation/components/molecules/profile-card'
+import { CopyIdButton } from '@/shared/presentation/components/molecules/copy-id-button'
 
-interface MemberFormTemplateProps {
+interface MemberFormPageProps {
   mode: 'create' | 'edit'
   /** Edit mode: the member id from the route. */
   memberId?: number
 }
 
-export function MemberFormTemplate({ mode, memberId }: MemberFormTemplateProps) {
+/** The add/edit member page: header, profile sidebar (edit), form card, modals. */
+
+export function MemberFormPage({ mode, memberId }: MemberFormPageProps) {
   const router = useRouter()
   const dispatch = useAppDispatch()
   const { created, updated } = useAppSelector((state) => state.memberForm)

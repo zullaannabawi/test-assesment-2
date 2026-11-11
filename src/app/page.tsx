@@ -1,7 +1,7 @@
 'use client'
 
-import { DashboardTemplate } from '@/shared/presentation/components/templates/dashboard-template'
+import { MemberListPage } from '@/features/member-list/presentation/pages/member-list'
 
 export default function HomePage() {
-  return <DashboardTemplate />
+  return <MemberListPage />
 }

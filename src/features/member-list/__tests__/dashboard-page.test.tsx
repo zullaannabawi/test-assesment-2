@@ -3,7 +3,7 @@ import { render, screen, within, act, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Provider } from 'react-redux'
 import { makeStore } from '@/shared/presentation/store'
-import { DashboardTemplate } from '@/shared/presentation/components/templates/dashboard-template'
+import { MemberListPage } from '@/features/member-list/presentation/pages/member-list'
 import { TopBar } from '@/shared/presentation/components/organisms/top-bar'
 import { StatCardsRow } from '@/shared/presentation/components/organisms/stat-cards-row'
 import {
@@ -61,7 +61,7 @@ const stats: MemberStats = {
 function renderDashboard() {
   return render(
     <Provider store={makeStore()}>
-      <DashboardTemplate />
+      <MemberListPage />
     </Provider>,
   )
 }

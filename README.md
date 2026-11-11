@@ -36,13 +36,15 @@ src/
 │   ├── members/[id]/edit/      # edit form
 │   └── api/members/            # GET/POST/DELETE collection, GET/PUT [id], /stats
 │       └── mocks.ts            # 10-member seed + resetMemberStore()
-├── features/                   # FDD slices
-│   ├── member-list/       # read model: domain, use cases, infra, controller
+├── features/                   # FDD slices (vertical: domain → presentation)
+│   ├── member-list/            # read model: domain, use cases, infra, controller
+│   │   └── presentation/pages/member-list.tsx   # Members Directory page
 │   └── member-form/            # write model: validation + create/update use cases
+│       └── presentation/pages/member-form.tsx   # add/edit page
 ├── shared/
 │   ├── lib/                    # pure helpers (formatters, csv, delay)
 │   ├── constants/enums.ts      # re-export of domain enums for the UI
-│   └── presentation/           # atoms/molecules/organisms/templates + Redux store
+│   └── presentation/           # generic UI (atoms/molecules/organisms) + Redux store
 └── composition/registry.ts     # DI: default ApiMemberRepository, test seam setMemberRepository
 ```
 

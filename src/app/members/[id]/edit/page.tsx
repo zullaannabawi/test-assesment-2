@@ -1,9 +1,9 @@
 'use client'
 
 import { useParams } from 'next/navigation'
-import { MemberFormTemplate } from '@/shared/presentation/components/templates/member-form-template'
+import { MemberFormPage } from '@/features/member-form/presentation/pages/member-form'
 
 export default function EditMemberPage() {
   const { id } = useParams<{ id: string }>()
-  return <MemberFormTemplate mode="edit" memberId={Number(id)} />
+  return <MemberFormPage mode="edit" memberId={Number(id)} />
 }
