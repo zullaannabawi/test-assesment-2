@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import type { Member } from '@/features/member-dashboard/domain/member'
+import type { Member } from '@/features/member-list/domain/member'
 import type { MemberFormServerError } from '../actions/member-form.action'
 import { submitCreateMember, submitUpdateMember } from '../actions/member-form.action'
 

@@ -7,7 +7,7 @@ import EditMemberPage from '@/app/members/[id]/edit/page'
 import {
   deleteMembersController,
   getMemberByIdController,
-} from '../controllers/member-dashboard.controller'
+} from '../controllers/member-list.controller'
 import { updateMemberController } from '@/features/member-form/controllers/member-form.controller'
 import { MemberNotFoundError } from '../domain/member-errors'
 import {
@@ -24,7 +24,7 @@ vi.mock('next/navigation', () => ({
   useParams: () => ({ id: routeId }),
 }))
 
-vi.mock('../controllers/member-dashboard.controller', () => ({
+vi.mock('../controllers/member-list.controller', () => ({
   getMembersController: vi.fn(),
   getMemberStatsController: vi.fn(),
   getMemberByIdController: vi.fn(),

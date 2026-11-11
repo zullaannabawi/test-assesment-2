@@ -1,4 +1,4 @@
-import type { MemberInput } from '@/features/member-dashboard/domain/member'
+import type { MemberInput } from '@/features/member-list/domain/member'
 import { validateMemberInput } from '@/features/member-form/domain/validate-member-input'
 
 export type MemberPayloadResult =

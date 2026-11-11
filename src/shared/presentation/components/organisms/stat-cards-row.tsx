@@ -1,4 +1,4 @@
-import type { MemberStats } from '@/features/member-dashboard/domain/member'
+import type { MemberStats } from '@/features/member-list/domain/member'
 import { formatNumber } from '@/shared/lib/formatters'
 import { StatCard } from '../molecules/stat-card'
 

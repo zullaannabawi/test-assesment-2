@@ -1,12 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { memberDashboardReducer } from './slices/member-dashboard.slice'
+import { memberListReducer } from './slices/member-list.slice'
 import { memberFormReducer } from './slices/member-form.slice'
 import { memberDeletionReducer } from './slices/member-deletion.slice'
 
 export const makeStore = () =>
   configureStore({
     reducer: {
-      memberDashboard: memberDashboardReducer,
+      memberList: memberListReducer,
       memberForm: memberFormReducer,
       memberDeletion: memberDeletionReducer,
     },

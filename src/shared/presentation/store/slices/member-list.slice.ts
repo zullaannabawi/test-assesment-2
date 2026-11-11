@@ -1,14 +1,14 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import type { Member, MemberStats } from '@/features/member-dashboard/domain/member'
+import type { Member, MemberStats } from '@/features/member-list/domain/member'
 import {
   fetchMemberById,
   fetchMembers,
   fetchMemberStats,
-} from '../actions/member-dashboard.action'
+} from '../actions/member-list.action'
 
 type AsyncStatus = 'idle' | 'loading' | 'succeeded' | 'failed'
 
-export interface MemberDashboardState {
+export interface MemberListState {
   members: Member[]
   listStatus: AsyncStatus
   listError: string | null
@@ -20,7 +20,7 @@ export interface MemberDashboardState {
   detailStatus: AsyncStatus
 }
 
-const initialState: MemberDashboardState = {
+const initialState: MemberListState = {
   members: [],
   listStatus: 'idle',
   listError: null,
@@ -31,8 +31,8 @@ const initialState: MemberDashboardState = {
   detailStatus: 'idle',
 }
 
-const memberDashboardSlice = createSlice({
-  name: 'memberDashboard',
+const memberListSlice = createSlice({
+  name: 'memberList',
   initialState,
   reducers: {
     toggleSelectedMember(state, action: PayloadAction<number>) {
@@ -99,6 +99,6 @@ const memberDashboardSlice = createSlice({
 })
 
 export const { toggleSelectedMember, toggleSelectAllMembers, clearSelectedMembers } =
-  memberDashboardSlice.actions
+  memberListSlice.actions
 
-export const memberDashboardReducer = memberDashboardSlice.reducer
+export const memberListReducer = memberListSlice.reducer

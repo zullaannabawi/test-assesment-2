@@ -7,11 +7,11 @@ import { useAppDispatch, useAppSelector } from '@/shared/presentation/store/hook
 import {
   fetchMembers,
   fetchMemberStats,
-} from '@/shared/presentation/store/actions/member-dashboard.action'
+} from '@/shared/presentation/store/actions/member-list.action'
 import {
   toggleSelectedMember,
   toggleSelectAllMembers,
-} from '@/shared/presentation/store/slices/member-dashboard.slice'
+} from '@/shared/presentation/store/slices/member-list.slice'
 import {
   cancelDeletion,
   dismissDeletionResult,
@@ -33,7 +33,7 @@ import { SuccessModal } from '../organisms/success-modal'
 export function DashboardTemplate() {
   const dispatch = useAppDispatch()
   const { members, listStatus, stats, selectedIds } = useAppSelector(
-    (state) => state.memberDashboard,
+    (state) => state.memberList,
   )
   const { confirmingIds, deleting, lastResult } = useAppSelector(
     (state) => state.memberDeletion,

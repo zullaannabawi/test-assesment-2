@@ -9,4 +9,4 @@ export {
   type Department,
   type EmploymentType,
   type AccountStatus,
-} from '@/features/member-dashboard/domain/member'
+} from '@/features/member-list/domain/member'

@@ -1,5 +1,5 @@
-import type { MemberRepository } from '@/features/member-dashboard/use-cases/member-repository'
-import { ApiMemberRepository } from '@/features/member-dashboard/infrastructure/api/api-member-repository'
+import type { MemberRepository } from '@/features/member-list/use-cases/member-repository'
+import { ApiMemberRepository } from '@/features/member-list/infrastructure/api/api-member-repository'
 
 let memberRepositoryInstance: MemberRepository | null = null
 

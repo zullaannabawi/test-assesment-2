@@ -1,8 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import type { DeleteResult } from '@/features/member-dashboard/domain/member'
-import { deleteMembersController } from '@/features/member-dashboard/controllers/member-dashboard.controller'
-import { clearSelectedMembers } from '../slices/member-dashboard.slice'
-import { fetchMembers, fetchMemberStats } from './member-dashboard.action'
+import type { DeleteResult } from '@/features/member-list/domain/member'
+import { deleteMembersController } from '@/features/member-list/controllers/member-list.controller'
+import { clearSelectedMembers } from '../slices/member-list.slice'
+import { fetchMembers, fetchMemberStats } from './member-list.action'
 
 /**
  * Confirms a pending deletion. On success: stores the result for the modal,

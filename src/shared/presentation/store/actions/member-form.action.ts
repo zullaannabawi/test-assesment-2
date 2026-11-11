@@ -1,9 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import type { Member, MemberInput } from '@/features/member-dashboard/domain/member'
+import type { Member, MemberInput } from '@/features/member-list/domain/member'
 import {
   MemberEmailConflictError,
   MemberValidationFieldsError,
-} from '@/features/member-dashboard/domain/member-errors'
+} from '@/features/member-list/domain/member-errors'
 import {
   createMemberController,
   updateMemberController,

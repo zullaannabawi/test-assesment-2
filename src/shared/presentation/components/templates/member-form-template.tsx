@@ -5,14 +5,14 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useAppDispatch, useAppSelector } from '@/shared/presentation/store/hooks'
 import { dismissCreated, dismissUpdated } from '@/shared/presentation/store/slices/member-form.slice'
-import { fetchMemberById } from '@/shared/presentation/store/actions/member-dashboard.action'
+import { fetchMemberById } from '@/shared/presentation/store/actions/member-list.action'
 import { confirmDeleteMembers } from '@/shared/presentation/store/actions/member-deletion.action'
 import {
   cancelDeletion,
   requestDeletion,
   dismissDeletionResult,
 } from '@/shared/presentation/store/slices/member-deletion.slice'
-import type { Member } from '@/features/member-dashboard/domain/member'
+import type { Member } from '@/features/member-list/domain/member'
 import { formatDate, formatMemberCode } from '@/shared/lib/formatters'
 import { Button } from '../atoms/button'
 import { Text } from '../atoms/text'
@@ -32,7 +32,7 @@ export function MemberFormTemplate({ mode, memberId }: MemberFormTemplateProps) 
   const router = useRouter()
   const dispatch = useAppDispatch()
   const { created, updated } = useAppSelector((state) => state.memberForm)
-  const { detail, detailStatus } = useAppSelector((state) => state.memberDashboard)
+  const { detail, detailStatus } = useAppSelector((state) => state.memberList)
   const { confirmingIds, lastResult } = useAppSelector((state) => state.memberDeletion)
 
   useEffect(() => {

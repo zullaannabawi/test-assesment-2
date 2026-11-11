@@ -1,5 +1,5 @@
-import { InMemoryMemberRepository } from '@/features/member-dashboard/infrastructure/in-memory-member-repository'
-import type { Member } from '@/features/member-dashboard/domain/member'
+import { InMemoryMemberRepository } from '@/features/member-list/infrastructure/in-memory-member-repository'
+import type { Member } from '@/features/member-list/domain/member'
 
 function isoToday(): string {
   const now = new Date()

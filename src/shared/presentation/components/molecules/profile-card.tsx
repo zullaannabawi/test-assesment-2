@@ -1,4 +1,4 @@
-import type { Member } from '@/features/member-dashboard/domain/member'
+import type { Member } from '@/features/member-list/domain/member'
 import { formatNumber } from '@/shared/lib/formatters'
 import { Avatar } from '../atoms/avatar'
 import { Text } from '../atoms/text'
