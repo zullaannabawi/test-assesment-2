@@ -219,6 +219,7 @@ export function MemberFormPage({ mode, memberId }: MemberFormPageProps) {
           dashboard renders this same global result as its modal */}
       <SuccessModal
         open={lastResult !== null}
+        tone="danger"
         title={
           lastResult && lastResult.deleted.length === 1
             ? 'Member Deleted Successfully'
