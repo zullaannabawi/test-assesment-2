@@ -1,5 +1,6 @@
 'use client'
 
+import type { ReactNode } from 'react'
 import { CheckCircle2 } from 'lucide-react'
 import { Button } from '../atoms/button'
 import { Text } from '../atoms/text'
@@ -7,7 +8,8 @@ import { Text } from '../atoms/text'
 interface SuccessModalProps {
   open: boolean
   title: string
-  description?: string
+  /** Rich descriptions allowed — the design mixes plain/dark/code spans. */
+  description?: ReactNode
   primaryLabel: string
   onPrimary: () => void
   secondaryLabel?: string
@@ -35,7 +37,7 @@ export function SuccessModal({
           {title}
         </Text>
         {description ? (
-          <Text size="sm" className="modal__description">
+          <Text as="p" size="md" className="modal__description">
             {description}
           </Text>
         ) : null}

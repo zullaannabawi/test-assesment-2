@@ -25,7 +25,7 @@ export function EmptyState({
         {description}
       </Text>
       {actionLabel && onAction ? (
-        <Button variant="secondary" onClick={onAction}>
+        <Button variant="primary" onClick={onAction}>
           {actionLabel}
         </Button>
       ) : null}

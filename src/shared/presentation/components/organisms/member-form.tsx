@@ -52,8 +52,11 @@ export function MemberForm({ mode, member, onCancel, footerLeft }: MemberFormPro
     setValues((previous) => ({ ...previous, [name]: value }))
   }
 
-  const errorFor = (name: string): string | undefined =>
-    clientErrors[name] ?? serverError?.fields?.[name]
+  /** The design renders missing-required errors as the short marker "Required". */
+  const errorFor = (name: string): string | undefined => {
+    const raw = clientErrors[name] ?? serverError?.fields?.[name]
+    return raw?.endsWith('is required') ? 'Required' : raw
+  }
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()

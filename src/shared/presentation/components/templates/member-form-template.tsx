@@ -35,7 +35,7 @@ export function MemberFormTemplate({ mode, memberId }: MemberFormTemplateProps) 
   const dispatch = useAppDispatch()
   const { created, updated } = useAppSelector((state) => state.memberForm)
   const { detail, detailStatus } = useAppSelector((state) => state.memberList)
-  const { confirmingIds, lastResult } = useAppSelector((state) => state.memberDeletion)
+  const { confirming, lastResult } = useAppSelector((state) => state.memberDeletion)
 
   useEffect(() => {
     if (mode === 'edit' && memberId != null) {
@@ -62,10 +62,10 @@ export function MemberFormTemplate({ mode, memberId }: MemberFormTemplateProps) 
   }
 
   const handleDeleteConfirm = async () => {
-    if (!confirmingIds) {
+    if (!confirming) {
       return
     }
-    const result = await dispatch(confirmDeleteMembers(confirmingIds))
+    const result = await dispatch(confirmDeleteMembers(confirming.ids))
     if (confirmDeleteMembers.fulfilled.match(result)) {
       router.push('/')
     }
@@ -154,7 +154,11 @@ export function MemberFormTemplate({ mode, memberId }: MemberFormTemplateProps) 
                 <Button
                   variant="secondary"
                   className="btn--danger-outline"
-                  onClick={() => dispatch(requestDeletion([editMember.id]))}
+                  onClick={() =>
+                    dispatch(
+                      requestDeletion({ ids: [editMember.id], names: [editMember.full_name] }),
+                    )
+                  }
                 >
                   <Trash2 size={14} aria-hidden="true" />
                   Delete Member
@@ -170,7 +174,15 @@ export function MemberFormTemplate({ mode, memberId }: MemberFormTemplateProps) 
       <SuccessModal
         open={created !== null}
         title="Member Added Successfully"
-        description={created ? `${created.full_name} (${formatMemberCode(created.id)})` : undefined}
+        description={
+          created ? (
+            <>
+              The profile information for <strong>{created.full_name}</strong> (
+              <span className="member-code">{formatMemberCode(created.id)}</span>) has been added
+              and synchronized across all workspace services.
+            </>
+          ) : undefined
+        }
         primaryLabel="Back to Dashboard"
         onPrimary={handleCreatedPrimary}
       />
@@ -178,7 +190,15 @@ export function MemberFormTemplate({ mode, memberId }: MemberFormTemplateProps) 
       <SuccessModal
         open={updated !== null}
         title="Member Updated Successfully"
-        description={updated ? `${updated.full_name} (${formatMemberCode(updated.id)})` : undefined}
+        description={
+          updated ? (
+            <>
+              The profile information for <strong>{updated.full_name}</strong> (
+              <span className="member-code">{formatMemberCode(updated.id)}</span>) has been updated
+              and synchronized across all workspace services.
+            </>
+          ) : undefined
+        }
         secondaryLabel="Continue Editing"
         onSecondary={handleUpdatedSecondary}
         primaryLabel="Back to Dashboard"
@@ -186,12 +206,8 @@ export function MemberFormTemplate({ mode, memberId }: MemberFormTemplateProps) 
       />
 
       <ConfirmDialog
-        open={confirmingIds !== null}
-        title={
-          confirmingIds && confirmingIds.length === 1
-            ? 'Delete Member'
-            : `Delete ${confirmingIds?.length ?? 0} Members`
-        }
+        open={confirming !== null}
+        title={confirming && confirming.ids.length === 1 ? 'Delete Member' : `Delete ${confirming?.ids.length ?? 0} Members`}
         description="This permanently removes the selected members and revokes their permissions, sessions, and tokens."
         onConfirm={handleDeleteConfirm}
         onCancel={() => dispatch(cancelDeletion())}
@@ -201,13 +217,19 @@ export function MemberFormTemplate({ mode, memberId }: MemberFormTemplateProps) 
           dashboard renders this same global result as its modal */}
       <SuccessModal
         open={lastResult !== null}
-        title="Member Deleted Successfully"
+        title={
+          lastResult && lastResult.deleted.length === 1
+            ? 'Member Deleted Successfully'
+            : 'Members Deleted Successfully'
+        }
         description={
           lastResult
-            ? `${lastResult.deleted.length} ${lastResult.deleted.length === 1 ? 'member' : 'members'} deleted successfully. Their permissions, sessions, and tokens have been revoked.`
+            ? lastResult.deleted.length === 1
+              ? `${lastResult.names[0] ?? 'The member'} (#MEM-${lastResult.deleted[0]}) has been permanently removed from the workspace. All assigned permissions, active sessions, and access tokens have been revoked.`
+              : `${lastResult.deleted.length} members has been permanently removed from the workspace. All assigned permissions, active sessions, and access tokens have been revoked.`
             : undefined
         }
-        primaryLabel="Done"
+        primaryLabel="Dismiss"
         onPrimary={() => dispatch(dismissDeletionResult())}
       />
     </main>
