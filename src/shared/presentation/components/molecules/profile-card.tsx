@@ -3,16 +3,20 @@ import { formatNumber } from '@/shared/lib/formatters'
 import { Avatar } from '../atoms/avatar'
 import { Text } from '../atoms/text'
 
-/** Edit-page profile card: identity + repositories/deployments stats. */
+/** Edit-page sidebar card: large avatar, identity, repositories/deployments strip. */
 export function ProfileCard({ member }: { member: Member }) {
   return (
     <section className="profile-card" aria-label="Profile">
       <Avatar name={member.full_name} className="profile-card__avatar" />
-      <div className="profile-card__identity">
-        <Text weight="semibold">{member.full_name}</Text>
-        <Text size="sm">{member.job_title}</Text>
-        <Text size="sm">{member.email}</Text>
-      </div>
+      <Text weight="semibold" className="profile-card__name">
+        {member.full_name}
+      </Text>
+      <Text size="sm" className="profile-card__job">
+        {member.job_title}
+      </Text>
+      <Text size="sm" className="profile-card__email">
+        {member.email}
+      </Text>
       <dl className="profile-card__stats">
         <div className="profile-card__stat">
           <dt className="profile-card__stat-label">Repositories</dt>

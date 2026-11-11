@@ -8,11 +8,21 @@ interface FormFieldProps {
   required?: boolean
   helper?: string
   error?: string
+  /** Span the full grid row instead of sharing it with another field. */
+  fullWidth?: boolean
   children: ReactElement
 }
 
 /** Label + required marker + helper/error wiring (aria-describedby, aria-invalid) for one field. */
-export function FormField({ label, htmlFor, required = false, helper, error, children }: FormFieldProps) {
+export function FormField({
+  label,
+  htmlFor,
+  required = false,
+  helper,
+  error,
+  fullWidth = false,
+  children,
+}: FormFieldProps) {
   const describedBy = [error ? `${htmlFor}-error` : null, helper ? `${htmlFor}-helper` : null]
     .filter(Boolean)
     .join(' ')
@@ -25,7 +35,7 @@ export function FormField({ label, htmlFor, required = false, helper, error, chi
     : children
 
   return (
-    <div className="form-field">
+    <div className={fullWidth ? 'form-field form-field--full' : 'form-field'}>
       <label className="form-field__label" htmlFor={htmlFor}>
         {label}
         {required ? (

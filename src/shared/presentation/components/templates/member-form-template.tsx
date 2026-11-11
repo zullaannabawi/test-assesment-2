@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { ArrowLeft, Calendar, Trash2 } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/shared/presentation/store/hooks'
 import { dismissCreated, dismissUpdated } from '@/shared/presentation/store/slices/member-form.slice'
 import { fetchMemberById } from '@/shared/presentation/store/actions/member-list.action'
@@ -13,8 +14,9 @@ import {
   dismissDeletionResult,
 } from '@/shared/presentation/store/slices/member-deletion.slice'
 import type { Member } from '@/features/member-list/domain/member'
-import { formatDate, formatMemberCode } from '@/shared/lib/formatters'
+import { formatDate, formatMemberCode, shortStatus } from '@/shared/lib/formatters'
 import { Button } from '../atoms/button'
+import { Badge } from '../atoms/badge'
 import { Text } from '../atoms/text'
 import { MemberForm } from '../organisms/member-form'
 import { SuccessModal } from '../organisms/success-modal'
@@ -99,36 +101,68 @@ export function MemberFormTemplate({ mode, memberId }: MemberFormTemplateProps) 
 
   return (
     <main className="member-form-page">
-      <header className="member-form-page__header">
-        <Text as="h1" size="xl" weight="bold">
-          {mode === 'create' ? 'Add New Member' : `Edit ${formatMemberCode(editMember!.id)}`}
-        </Text>
-        <Text size="sm" className="member-form-page__subtitle">
-          {mode === 'create'
-            ? 'Fill in the details below to add a new team member.'
-            : 'Update the member details below.'}
-        </Text>
-
-        {editMember ? (
-          <div className="edit-header">
-            <div className="edit-header__meta">
-              <Text weight="semibold">{formatMemberCode(editMember.id)}</Text>
-              <Text size="sm">Joined {formatDate(editMember.joined_at)}</Text>
-              <CopyIdButton id={editMember.id} />
+      {editMember ? (
+        <header className="member-header">
+          <div className="member-header__top">
+            <div className="member-header__title">
+              <Link className="member-header__back" href="/" aria-label="Back to dashboard">
+                <ArrowLeft size={18} aria-hidden="true" />
+              </Link>
+              <Text as="h1" size="xl" weight="bold">
+                {editMember.full_name}
+              </Text>
+              <Badge tone={editMember.account_status.startsWith('Active') ? 'success' : 'warning'}>
+                <span className="badge__dot" aria-hidden="true" />
+                {shortStatus(editMember.account_status)}
+              </Badge>
             </div>
-            <ProfileCard member={editMember} />
-            <Button
-              variant="danger"
-              className="edit-header__delete"
-              onClick={() => dispatch(requestDeletion([editMember.id]))}
-            >
-              Delete Member
-            </Button>
+            <CopyIdButton id={editMember.id} />
           </div>
-        ) : null}
-      </header>
+          <div className="member-header__meta">
+            <span className="id-pill">ID: {formatMemberCode(editMember.id)}</span>
+            <span className="member-header__joined">
+              <Calendar size={14} aria-hidden="true" />
+              Joined {formatDate(editMember.joined_at)}
+            </span>
+          </div>
+        </header>
+      ) : (
+        <header className="member-form-page__header">
+          <Text as="h1" size="xl" weight="bold">
+            Add New Member
+          </Text>
+          <Text size="sm" className="member-form-page__subtitle">
+            Fill in the details below to add a new team member.
+          </Text>
+        </header>
+      )}
 
-      <MemberForm mode={mode} member={editMember ?? undefined} onCancel={handleCancel} />
+      {editMember ? (
+        <div className="edit-layout">
+          <aside className="edit-layout__aside">
+            <ProfileCard member={editMember} />
+          </aside>
+          <div className="edit-layout__main">
+            <MemberForm
+              mode={mode}
+              member={editMember}
+              onCancel={handleCancel}
+              footerLeft={
+                <Button
+                  variant="secondary"
+                  className="btn--danger-outline"
+                  onClick={() => dispatch(requestDeletion([editMember.id]))}
+                >
+                  <Trash2 size={14} aria-hidden="true" />
+                  Delete Member
+                </Button>
+              }
+            />
+          </div>
+        </div>
+      ) : (
+        <MemberForm mode={mode} onCancel={handleCancel} />
+      )}
 
       <SuccessModal
         open={created !== null}
