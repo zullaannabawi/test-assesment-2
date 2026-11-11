@@ -89,7 +89,7 @@ describe('member detail / edit page', () => {
   it('ME-02: renders the edit header and profile card', async () => {
     renderEditPage(2048)
 
-    expect(await screen.findByText('#MEM-2048')).toBeInTheDocument()
+    expect(await screen.findByText(/#MEM-2048/)).toBeInTheDocument()
     expect(screen.getByText('Joined Feb 14, 2022')).toBeInTheDocument()
 
     const card = screen.getByRole('region', { name: /profile/i })
@@ -111,7 +111,7 @@ describe('member detail / edit page', () => {
     })
 
     renderEditPage(2048)
-    await screen.findByText('#MEM-2048')
+    await screen.findByText(/#MEM-2048/)
 
     await user.click(screen.getByRole('button', { name: /copy id/i }))
 
@@ -132,7 +132,7 @@ describe('member detail / edit page', () => {
   it('ME-05: Delete Member confirms, deletes, and redirects to the dashboard', async () => {
     const user = userEvent.setup()
     renderEditPage(2048)
-    await screen.findByText('#MEM-2048')
+    await screen.findByText(/#MEM-2048/)
 
     await user.click(screen.getByRole('button', { name: /delete member/i }))
     const dialog = await screen.findByRole('dialog')
