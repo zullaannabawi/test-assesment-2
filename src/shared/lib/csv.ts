@@ -1,11 +1,6 @@
 import type { AccountStatus } from '@/features/member-list/domain/member'
 import { formatDate, shortStatus } from './formatters'
 
-/**
- * CSV export of the displayed member rows (SH-07..08).
- * Contract header, short status, formatted join date, RFC 4180 escaping.
- */
-
 /** One exported member row — snake_case mirrors the API entity fields. */
 export interface MemberCsvRow {
   full_name: string
@@ -16,38 +11,35 @@ export interface MemberCsvRow {
   joined_at: string
 }
 
-const CSV_HEADER = ['Full Name', 'Email', 'Job Title', 'Department', 'Status', 'Joined Date'] as const
+/** Excel export uses ';' so columns split on double-click regardless of OS locale. */
+export const EXCEL_CSV_SEPARATOR = ';'
 
-/** RFC 4180: wrap a field in quotes when it has a comma, quote or newline; inner quotes are doubled. */
-function escapeCsvField(value: string): string {
-  return /[",\n]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value
+const HEADER = ['Full Name', 'Email', 'Job Title', 'Department', 'Status', 'Joined Date']
+
+/** RFC 4180 CSV; separator defaults to the contract comma. */
+export function toCsv(rows: readonly MemberCsvRow[], separator = ','): string {
+  const line = (fields: string[]) =>
+    fields
+      .map((f) => (new RegExp(`["${separator}\\n]`).test(f) ? `"${f.replace(/"/g, '""')}"` : f))
+      .join(separator)
+  return [
+    line(HEADER),
+    ...rows.map((r) =>
+      line([r.full_name, r.email, r.job_title, r.department, shortStatus(r.account_status), formatDate(r.joined_at)]),
+    ),
+  ].join('\n')
 }
 
-export function toCsv(rows: readonly MemberCsvRow[]): string {
-  const lines = rows.map((row) =>
-    [
-      row.full_name,
-      row.email,
-      row.job_title,
-      row.department,
-      shortStatus(row.account_status),
-      formatDate(row.joined_at),
-    ]
-      .map(escapeCsvField)
-      .join(','),
-  )
-  return [CSV_HEADER.join(','), ...lines].join('\n')
-}
-
-/** DOM side effect (untested): trigger a browser download of the CSV string. */
+/** Downloads the CSV so Excel opens it with columns split: BOM + `sep=;` hint + CRLF. */
 export function downloadCsv(filename: string, csv: string): void {
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
-  const url = URL.createObjectURL(blob)
-  const link = document.createElement('a')
-  link.href = url
-  link.download = filename
-  document.body.appendChild(link)
+  const href = URL.createObjectURL(
+    new Blob([`﻿sep=${EXCEL_CSV_SEPARATOR}\r\n${csv.replace(/\n/g, '\r\n')}`], {
+      type: 'text/csv;charset=utf-8;',
+    }),
+  )
+  const link = Object.assign(document.createElement('a'), { href, download: filename })
+  document.body.append(link)
   link.click()
-  document.body.removeChild(link)
-  URL.revokeObjectURL(url)
+  link.remove()
+  URL.revokeObjectURL(href)
 }

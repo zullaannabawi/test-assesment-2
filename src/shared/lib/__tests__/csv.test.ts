@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { toCsv, type MemberCsvRow } from '../csv'
+import { toCsv, EXCEL_CSV_SEPARATOR, type MemberCsvRow } from '../csv'
 import { ACCOUNT_STATUSES } from '@/shared/constants/enums'
 
 const sarah: MemberCsvRow = {
@@ -34,5 +34,23 @@ describe('shared/lib/csv', () => {
 
     expect(line).toContain('"Elena ""El"" Rostova, Jr."')
     expect(line).toContain('"Product Designer, UI"')
+  })
+
+  it('companion: semicolon separator joins with ; and quotes ; -containing fields, not comma-containing ones', () => {
+    const csv = toCsv([sarah], ';')
+    const lines = csv.split('\n')
+
+    expect(lines[0]).toBe('Full Name;Email;Job Title;Department;Status;Joined Date')
+    // the comma inside the date is just content now — no quoting needed
+    expect(lines[1]).toBe(
+      'Sarah Jenkins;sarah.jenkins@membercore.internal;Staff Frontend Engineer;Engineering;Active;Feb 14, 2022'
+    )
+
+    const semicolonField = toCsv([{ ...sarah, job_title: 'Product Designer; UI' }], ';')
+    expect(semicolonField.split('\n')[1]).toContain('"Product Designer; UI"')
+  })
+
+  it('companion: the Excel export separator constant is semicolon', () => {
+    expect(EXCEL_CSV_SEPARATOR).toBe(';')
   })
 })

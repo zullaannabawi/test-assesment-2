@@ -8,7 +8,7 @@ import {
   toggleSelectAllMembers,
 } from '@/shared/presentation/store/slices/member-list.slice'
 import { MemberListPage } from '@/features/member-list/presentation/pages/member-list'
-import { downloadCsv, toCsv, type MemberCsvRow } from '@/shared/lib/csv'
+import { downloadCsv, toCsv, EXCEL_CSV_SEPARATOR, type MemberCsvRow } from '@/shared/lib/csv'
 import {
   getMembersController,
   getMemberStatsController,
@@ -142,7 +142,7 @@ describe('selection, bulk bar & CSV export', () => {
       joined_at: sarah.joined_at,
     }
     expect(mockedDownloadCsv).toHaveBeenCalledTimes(1)
-    expect(mockedDownloadCsv).toHaveBeenCalledWith('members.csv', toCsv([expectedRow]))
+    expect(mockedDownloadCsv).toHaveBeenCalledWith('members.csv', toCsv([expectedRow], EXCEL_CSV_SEPARATOR))
   })
 })
 

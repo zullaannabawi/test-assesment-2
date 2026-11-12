@@ -19,7 +19,12 @@ import {
 } from '@/shared/presentation/store/slices/member-deletion.slice'
 import { confirmDeleteMembers } from '@/shared/presentation/store/actions/member-deletion.action'
 import { useDebouncedValue } from '@/shared/presentation/hooks/use-debounced-value'
-import { downloadCsv, toCsv, type MemberCsvRow } from '@/shared/lib/csv'
+import {
+  downloadCsv,
+  EXCEL_CSV_SEPARATOR,
+  toCsv,
+  type MemberCsvRow,
+} from '@/shared/lib/csv'
 import { Button } from '@/shared/presentation/components/atoms/button'
 import { Text } from '@/shared/presentation/components/atoms/text'
 import { SearchBar } from '@/shared/presentation/components/molecules/search-bar'
@@ -69,7 +74,7 @@ export function MemberListPage() {
         joined_at,
       }),
     )
-    downloadCsv('members.csv', toCsv(rows))
+    downloadCsv('members.csv', toCsv(rows, EXCEL_CSV_SEPARATOR))
   }
 
   const showEmptyState = listStatus === 'succeeded' && members.length === 0
