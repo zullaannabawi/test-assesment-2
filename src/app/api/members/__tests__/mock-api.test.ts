@@ -214,6 +214,17 @@ describe('mock API — POST /api/members', () => {
     expect(res.status).toBe(409)
     expect((await res.json()).error.code).toBe('CONFLICT')
   })
+
+  it('companion: POST with HTML tags in fields is rejected with 422', async () => {
+    const res = await postMemberHandler(
+      jsonRequest(BASE, 'POST', { ...michaelPayload, full_name: '<b>Michael</b>' }),
+    )
+
+    expect(res.status).toBe(422)
+    const body = await res.json()
+    expect(body.error.code).toBe('VALIDATION_ERROR')
+    expect(body.error.fields.full_name).toMatch(/html tags/i)
+  })
 })
 
 describe('mock API — PUT /api/members/[id]', () => {

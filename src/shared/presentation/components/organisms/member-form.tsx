@@ -95,6 +95,7 @@ export function MemberForm({ mode, member, onCancel, footerLeft }: MemberFormPro
             >
               <Input
                 id="full_name"
+                maxLength={100}
                 value={values.full_name ?? ''}
                 onChange={(e) => setField('full_name', e.target.value)}
               />
@@ -108,6 +109,7 @@ export function MemberForm({ mode, member, onCancel, footerLeft }: MemberFormPro
             >
               <Input
                 id="email"
+                maxLength={254}
                 type="email"
                 value={values.email ?? ''}
                 onChange={(e) => setField('email', e.target.value)}
@@ -153,6 +155,7 @@ export function MemberForm({ mode, member, onCancel, footerLeft }: MemberFormPro
             >
               <Input
                 id="job_title"
+                maxLength={100}
                 value={values.job_title ?? ''}
                 onChange={(e) => setField('job_title', e.target.value)}
               />
@@ -204,6 +207,7 @@ export function MemberForm({ mode, member, onCancel, footerLeft }: MemberFormPro
             >
               <Textarea
                 id="bio"
+                maxLength={500}
                 value={values.bio ?? ''}
                 onChange={(e) => setField('bio', e.target.value)}
               />

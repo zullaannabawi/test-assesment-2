@@ -53,4 +53,15 @@ describe('shared/lib/csv', () => {
   it('companion: the Excel export separator constant is semicolon', () => {
     expect(EXCEL_CSV_SEPARATOR).toBe(';')
   })
+
+  it('companion: formula-prefixed values are neutralized against Excel formula injection', () => {
+    const formula = toCsv([{ ...sarah, full_name: '=SUM(A1)' }], ';')
+    expect(formula.split('\n')[1]).toContain(`'=SUM(A1)`)
+
+    const plus = toCsv([{ ...sarah, job_title: '+CMD(cmd)' }], ';')
+    expect(plus.split('\n')[1]).toContain(`'+CMD(cmd)`)
+
+    const at = toCsv([{ ...sarah, department: '@风险' as never }], ';')
+    expect(at.split('\n')[1]).toContain(`'@风险`)
+  })
 })

@@ -16,11 +16,17 @@ export const EXCEL_CSV_SEPARATOR = ';'
 
 const HEADER = ['Full Name', 'Email', 'Job Title', 'Department', 'Status', 'Joined Date']
 
-/** RFC 4180 CSV; separator defaults to the contract comma. */
+/** RFC 4180 CSV; separator defaults to the contract comma. Excel formula injection is neutralized. */
 export function toCsv(rows: readonly MemberCsvRow[], separator = ','): string {
+  const guard = (f: string) => (/^[=+\t@]|^-/.test(f) ? `'${f}` : f)
   const line = (fields: string[]) =>
     fields
-      .map((f) => (new RegExp(`["${separator}\\n]`).test(f) ? `"${f.replace(/"/g, '""')}"` : f))
+      .map((f) => {
+        const value = guard(f)
+        return new RegExp(`["${separator}\\n]`).test(value)
+          ? `"${value.replace(/"/g, '""')}"`
+          : value
+      })
       .join(separator)
   return [
     line(HEADER),

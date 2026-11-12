@@ -68,4 +68,37 @@ describe('member-form domain — validateMemberInput', () => {
       })
     }
   })
+
+  it('companion: rejects HTML tags in free-text fields (XSS defense-in-depth)', () => {
+    const scripted = validateMemberInput({
+      ...validInput,
+      full_name: 'Sarah <script>alert(1)</script>',
+    })
+    expect(scripted.valid).toBe(false)
+    if (!scripted.valid) {
+      expect(scripted.fields.full_name).toMatch(/html tags/i)
+    }
+
+    const imgPayload = validateMemberInput({ ...validInput, bio: '<img src=x onerror=alert(1)>' })
+    expect(imgPayload.valid).toBe(false)
+    if (!imgPayload.valid) {
+      expect(imgPayload.fields.bio).toMatch(/html tags/i)
+    }
+  })
+
+  it('companion: rejects angle-bracket content in the email as well', () => {
+    const result = validateMemberInput({ ...validInput, email: 'a<b@c.d' })
+    expect(result.valid).toBe(false)
+    if (!result.valid) {
+      expect(result.fields.email).toMatch(/html tags|format/i)
+    }
+  })
+
+  it('companion: enforces field length caps', () => {
+    const result = validateMemberInput({ ...validInput, job_title: 'X'.repeat(101) })
+    expect(result.valid).toBe(false)
+    if (!result.valid) {
+      expect(result.fields.job_title).toMatch(/at most 100 characters/i)
+    }
+  })
 })
