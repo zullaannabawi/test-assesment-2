@@ -74,24 +74,21 @@ beforeEach(() => {
 })
 
 describe('delete flows', () => {
-  it('MD-13: trash -> confirm -> delete single member -> success modal + refetch + selection reset', async () => {
+  it('MD-13: trash deletes directly (no confirm) -> success modal + refetch + selection reset', async () => {
     const user = userEvent.setup()
     renderDashboard()
     await screen.findByText('Sarah Jenkins')
 
     // select the row first so we can verify the selection is reset afterwards
     await user.click(screen.getByRole('checkbox', { name: 'Select Sarah Jenkins' }))
-    expect(screen.getByText('1 selected')).toBeInTheDocument()
 
     mockedGetMembers.mockClear()
     mockedGetStats.mockClear()
 
     await user.click(screen.getByRole('button', { name: 'Delete Sarah Jenkins' }))
-    const dialog = await screen.findByRole('dialog')
-    expect(within(dialog).getByText('Delete Member')).toBeInTheDocument()
 
-    await user.click(within(dialog).getByRole('button', { name: 'Delete' }))
-
+    // direct action delete — the confirm dialog (Cancel/Delete) never appears
+    expect(screen.queryByRole('button', { name: 'Cancel' })).not.toBeInTheDocument()
     expect(mockedDelete).toHaveBeenCalledTimes(1)
     expect(mockedDelete).toHaveBeenCalledWith([2048])
 
@@ -111,24 +108,38 @@ describe('delete flows', () => {
     expect(mockedGetMembers).toHaveBeenCalledTimes(1)
     expect(mockedGetStats).toHaveBeenCalledTimes(1)
 
-    // selection cleared -> bulk bar gone
-    expect(screen.queryByText('1 selected')).not.toBeInTheDocument()
+    // selection cleared
+    expect(screen.getByRole('checkbox', { name: 'Select Sarah Jenkins' })).not.toBeChecked()
   })
 
-  it('companion: the bulk bar routes the whole selection through the confirm dialog', async () => {
+  it('MD-13: with rows selected, any row trash deletes the whole selection directly', async () => {
     const user = userEvent.setup()
+    mockedDelete.mockResolvedValue({ deleted: [2048, 2047], failed: [] })
     renderDashboard()
     await screen.findByText('Sarah Jenkins')
 
     await user.click(screen.getByRole('checkbox', { name: 'Select all members' }))
-    expect(screen.getByText('2 selected')).toBeInTheDocument()
 
-    await user.click(within(screen.getByRole('toolbar')).getByRole('button', { name: 'Delete' }))
-    const dialog = await screen.findByRole('dialog')
-    expect(within(dialog).getByText('Delete 2 Members')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Delete David Chen' }))
 
-    await user.click(within(dialog).getByRole('button', { name: 'Cancel' }))
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-    expect(screen.getByText('2 selected')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Cancel' })).not.toBeInTheDocument()
+    expect(mockedDelete).toHaveBeenCalledWith([2048, 2047])
+
+    expect(await screen.findByText('Members Deleted Successfully')).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        '2 members has been permanently removed from the workspace. All assigned permissions, active sessions, and access tokens have been revoked.',
+      ),
+    ).toBeInTheDocument()
+  })
+
+  it('companion: with no selection, the trash deletes just that row', async () => {
+    const user = userEvent.setup()
+    renderDashboard()
+    await screen.findByText('Sarah Jenkins')
+
+    await user.click(screen.getByRole('button', { name: 'Delete David Chen' }))
+
+    expect(mockedDelete).toHaveBeenCalledWith([2047])
   })
 })

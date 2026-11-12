@@ -81,25 +81,22 @@ beforeEach(() => {
   mockedDownloadCsv.mockReset()
 })
 
-describe('selection, bulk bar & CSV export', () => {
+describe('selection & CSV export', () => {
   it('MD-10: a row checkbox adds then removes the id from the selection', async () => {
     const user = userEvent.setup()
     renderDashboard()
 
     const sarahBox = await screen.findByRole('checkbox', { name: 'Select Sarah Jenkins' })
     expect(sarahBox).not.toBeChecked()
-    expect(screen.queryByText('1 selected')).not.toBeInTheDocument()
 
     await user.click(sarahBox)
     expect(sarahBox).toBeChecked()
-    expect(screen.getByText('1 selected')).toBeInTheDocument()
 
     await user.click(sarahBox)
     expect(sarahBox).not.toBeChecked()
-    expect(screen.queryByText('1 selected')).not.toBeInTheDocument()
   })
 
-  it('MD-11: header select-all toggles every displayed id and drives the bulk bar', async () => {
+  it('MD-11: header select-all toggles every displayed id (no bulk bar element)', async () => {
     const user = userEvent.setup()
     renderDashboard()
     await screen.findByText('Sarah Jenkins')
@@ -110,19 +107,18 @@ describe('selection, bulk bar & CSV export', () => {
     await user.click(selectAll)
     expect(screen.getByRole('checkbox', { name: 'Select Sarah Jenkins' })).toBeChecked()
     expect(screen.getByRole('checkbox', { name: 'Select David Chen' })).toBeChecked()
-    expect(screen.getByText('2 selected')).toBeInTheDocument()
     expect(selectAll).toBeChecked()
 
     await user.click(screen.getByRole('checkbox', { name: 'Select David Chen' }))
-    expect(screen.getByText('1 selected')).toBeInTheDocument()
     expect(selectAll).toBePartiallyChecked()
 
     await user.click(selectAll)
-    expect(screen.getByText('2 selected')).toBeInTheDocument()
+    expect(screen.getByRole('checkbox', { name: 'Select David Chen' })).toBeChecked()
+    expect(selectAll).toBeChecked()
 
     await user.click(selectAll)
-    expect(screen.queryByText('1 selected')).not.toBeInTheDocument()
-    expect(screen.queryByText('2 selected')).not.toBeInTheDocument()
+    expect(screen.getByRole('checkbox', { name: 'Select Sarah Jenkins' })).not.toBeChecked()
+    expect(screen.getByRole('checkbox', { name: 'Select David Chen' })).not.toBeChecked()
   })
 
   it('MD-12: Export CSV builds the file from the displayed (filtered) rows', async () => {

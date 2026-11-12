@@ -67,7 +67,9 @@ export function MemberFormPage({ mode, memberId }: MemberFormPageProps) {
     if (!confirming) {
       return
     }
-    const result = await dispatch(confirmDeleteMembers(confirming.ids))
+    const result = await dispatch(
+      confirmDeleteMembers({ ids: confirming.ids, names: confirming.names }),
+    )
     if (confirmDeleteMembers.fulfilled.match(result)) {
       router.push('/')
     }

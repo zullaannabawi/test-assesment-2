@@ -47,7 +47,7 @@ const memberDeletionSlice = createSlice({
       })
       .addCase(confirmDeleteMembers.fulfilled, (state, action) => {
         state.deleting = false
-        state.lastResult = { ...action.payload, names: state.confirming?.names ?? [] }
+        state.lastResult = action.payload
         state.confirming = null
       })
       .addCase(confirmDeleteMembers.rejected, (state) => {

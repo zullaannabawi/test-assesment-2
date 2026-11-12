@@ -12,11 +12,7 @@ import {
   toggleSelectedMember,
   toggleSelectAllMembers,
 } from '@/shared/presentation/store/slices/member-list.slice'
-import {
-  cancelDeletion,
-  dismissDeletionResult,
-  requestDeletion,
-} from '@/shared/presentation/store/slices/member-deletion.slice'
+import { dismissDeletionResult } from '@/shared/presentation/store/slices/member-deletion.slice'
 import { confirmDeleteMembers } from '@/shared/presentation/store/actions/member-deletion.action'
 import { useDebouncedValue } from '@/shared/presentation/hooks/use-debounced-value'
 import {
@@ -31,8 +27,6 @@ import { SearchBar } from '@/shared/presentation/components/molecules/search-bar
 import { StatCardsRow } from '@/shared/presentation/components/organisms/stat-cards-row'
 import { MembersTable } from '@/shared/presentation/components/organisms/members-table'
 import { EmptyState } from '@/shared/presentation/components/organisms/empty-state'
-import { BulkActionBar } from '@/shared/presentation/components/organisms/bulk-action-bar'
-import { ConfirmDialog } from '@/shared/presentation/components/organisms/confirm-dialog'
 import { SuccessModal } from '@/shared/presentation/components/organisms/success-modal'
 
 /** The Members Directory page: KPI cards, search, table, selection, delete flows. */
@@ -41,7 +35,7 @@ export function MemberListPage() {
   const { members, listStatus, stats, selectedIds } = useAppSelector(
     (state) => state.memberList,
   )
-  const { confirming, lastResult } = useAppSelector((state) => state.memberDeletion)
+  const { lastResult } = useAppSelector((state) => state.memberDeletion)
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebouncedValue(search, 300)
 
@@ -114,42 +108,25 @@ export function MemberListPage() {
             onAction={handleClearSearch}
           />
         ) : (
-          <>
-            <BulkActionBar
-              count={selectedIds.length}
-              onDelete={() =>
-                dispatch(
-                  requestDeletion({
-                    ids: selectedIds,
-                    names: members
-                      .filter((member) => selectedIds.includes(member.id))
-                      .map((member) => member.full_name),
-                  }),
-                )
-              }
-            />
-            <MembersTable
-              members={members}
-              selectedIds={selectedIds}
-              onToggleSelectMember={(id) => dispatch(toggleSelectedMember(id))}
-              onToggleSelectAll={() =>
-                dispatch(toggleSelectAllMembers(members.map((member) => member.id)))
-              }
-              onDeleteMember={(member) =>
-                dispatch(requestDeletion({ ids: [member.id], names: [member.full_name] }))
-              }
-            />
-          </>
+          <MembersTable
+            members={members}
+            selectedIds={selectedIds}
+            onToggleSelectMember={(id) => dispatch(toggleSelectedMember(id))}
+            onToggleSelectAll={() =>
+              dispatch(toggleSelectAllMembers(members.map((member) => member.id)))
+            }
+            onDeleteMember={(member) => {
+              // direct action delete: the row trash acts on the whole selection,
+              // or on its single row when nothing is checked (no confirm dialog)
+              const ids = selectedIds.length > 0 ? selectedIds : [member.id]
+              const names = members
+                .filter((row) => ids.includes(row.id))
+                .map((row) => row.full_name)
+              dispatch(confirmDeleteMembers({ ids, names }))
+            }}
+          />
         )}
       </div>
-
-      <ConfirmDialog
-        open={confirming !== null}
-        title={confirming && confirming.ids.length === 1 ? 'Delete Member' : `Delete ${confirming?.ids.length ?? 0} Members`}
-        description="This permanently removes the selected members and revokes their permissions, sessions, and tokens."
-        onConfirm={() => confirming && dispatch(confirmDeleteMembers(confirming.ids))}
-        onCancel={() => dispatch(cancelDeletion())}
-      />
 
       <SuccessModal
         open={lastResult !== null}
