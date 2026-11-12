@@ -85,16 +85,15 @@ describe('mock API — GET /api/members', () => {
     expect(wrongCase).toEqual([])
   })
 
-  it('API-04: default sort is joined_at desc and the reserved sort param is accepted', async () => {
+  it('API-04: default order is id ascending (new members last) and the reserved sort param is accepted', async () => {
     const resDefault = await getMembersHandler(listRequest())
     const body = await resDefault.json()
-    const dates = body.map((m: { joined_at: string }) => m.joined_at)
-    const descending = [...dates].sort((a: string, b: string) => b.localeCompare(a))
-    expect(dates).toEqual(descending)
+    const ids = body.map((m: { id: number }) => m.id)
+    expect(ids).toEqual(Array.from({ length: 10 }, (_, i) => 2039 + i))
 
     const resSorted = await getMembersHandler(listRequest('?sort=name'))
     expect(resSorted.status).toBe(200)
-    expect((await resSorted.json()).map((m: { joined_at: string }) => m.joined_at)).toEqual(descending)
+    expect((await resSorted.json()).map((m: { id: number }) => m.id)).toEqual(ids)
   })
 })
 

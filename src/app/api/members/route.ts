@@ -7,7 +7,7 @@ import { parseMemberPayload } from './_shared/member-payload'
 
 /**
  * GET /api/members — list with optional filters, no pagination.
- * `sort` is reserved: accepted but ignored (default joined_at desc in the store).
+ * `sort` is reserved: accepted but ignored (default order: id ascending).
  */
 export async function GET(request: Request): Promise<Response> {
   const { searchParams } = new URL(request.url)

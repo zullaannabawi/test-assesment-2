@@ -47,7 +47,8 @@ export class InMemoryMemberRepository implements MemberRepository {
         }
         return !filter.department || m.department === filter.department
       })
-      .sort((a, b) => b.joined_at.localeCompare(a.joined_at))
+      // default order: id ascending — newly added members (highest id) at the bottom
+      .sort((a, b) => a.id - b.id)
       .map(clone)
   }
 

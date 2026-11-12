@@ -47,7 +47,7 @@ describe('InMemoryMemberRepository (companion coverage)', () => {
     await expect(repo.getMembers({ search: 'nope' })).resolves.toEqual([])
   })
 
-  it('filters by short status prefix and exact department, default-sorted by joined_at desc', async () => {
+  it('filters by short status prefix and exact department, default-sorted by id ascending', async () => {
     const repo = new InMemoryMemberRepository([sarah, michael])
 
     const inactive = await repo.getMembers({ status: 'inactive' })
